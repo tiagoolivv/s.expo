@@ -170,8 +170,8 @@ Husky runs these on `pre-commit` and `commit-msg`. A commit that would fail CI n
 | `type-check.yml` | `tsc --noemit`, annotated inline | yes |
 | `test.yml` | `jest`, with the summary posted as a comment | yes |
 | `expo-doctor.yml` | only when `package.json` or `pnpm-lock.yaml` changed | yes, when it runs |
-| `quality.yml` | `pnpm quality`: CRAP < 10 and no duplication >= 0.8 | add it to the ruleset to make it blocking |
-| `harness.yml` | hook-rule tests and `harness-score --min-level 4` | add it to the ruleset to make it blocking |
+| `quality.yml` | `pnpm quality`: CRAP < 10 and no duplication >= 0.8 | yes — required by the `main` ruleset |
+| `harness.yml` | hook-rule tests and `harness-score --min-level 4` | yes — required by the `main` ruleset |
 
 **End-to-end tests do not run automatically.** Two Maestro entry points exist and both are manual, because a full Android build plus an emulator run is around an hour of runner time — metered while the repository is private:
 
