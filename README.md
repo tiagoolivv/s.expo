@@ -11,7 +11,13 @@
 
 <p align="center">
   Opinionated Expo template for responsive, multi-platform apps.<br />
-  Phone and tablet, iOS and Android.
+  Phone and tablet, iOS and Android — with an agent harness any AI tool can pick up.
+</p>
+
+<p align="center">
+  <img alt="Harness Score: L4 Self-correcting" src="https://img.shields.io/badge/harness-L4%20%C2%B7%20self--correcting-2ea44f" />
+  <img alt="CRAP under 10" src="https://img.shields.io/badge/CRAP-%3C%2010-2ea44f" />
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue" />
 </p>
 
 ---
@@ -36,6 +42,8 @@ The project structure, the CI workflows and most of the tooling choices come fro
 | Lint & format | ESLint (`@antfu/eslint-config`, formatting via ESLint Stylistic — no Prettier) |
 | Language | TypeScript 6, strict |
 | Package manager | pnpm |
+| Agent harness | `AGENTS.md`, `s-expo-*` agents, skills, rules and hooks in `.claude/`, project memory in `docs/memory/` |
+| Code quality | crapper (CRAP), dryer (duplication), mutator (mutation testing) — vendored in `tools/` |
 
 ## Getting started
 
@@ -66,11 +74,34 @@ Install the recommended extensions when prompted, and accept the prompt to use t
 pnpm lint             # eslint
 pnpm type-check       # tsc --noemit
 pnpm test             # jest
-pnpm check-all        # all of the above + translation lint
+pnpm check-all        # all of the above + translation lint + hook tests
+pnpm quality          # CRAP < 10 per function and no duplication >= 0.8
+pnpm quality:mutate src/lib/utils.ts   # mutation testing on the files you changed
+pnpm harness:score    # agent-harness maturity (L0–L4)
 pnpm e2e-test         # maestro flows (requires a running emulator)
 ```
 
+`pnpm quality` and `quality:mutate` run Python 3.11+ tools; on macOS, `brew install python@3.12` once.
+
 Every change is written test-first. **[`docs/workflow.md`](./docs/workflow.md) is the development loop** — how a change goes from an idea to a merge — and the rest of the conventions live in [`docs/`](./docs/README.md).
+
+## AI agent harness
+
+The repository carries everything an AI coding agent needs to work here, so a conversation can start with one line — *"Follow AGENTS.md. Task: …"* — in any tool, on any model. Switch from Claude to Codex or Gemini when a usage limit runs out and the context comes with the code, not with the chat.
+
+| Piece | Where | What it gives the agent |
+| --- | --- | --- |
+| Entry point | [`AGENTS.md`](./AGENTS.md) (imported by `CLAUDE.md`, `GEMINI.md`) | stack, rules, commands, which skill to use |
+| Memory | [`docs/memory/`](./docs/memory/README.md) | decisions and their reasons, lessons from failures, glossary, work log |
+| Skills | `.claude/skills/s-expo-*` (also `.agents/skills/`) | procedures: `s-expo-dev` orchestrates a change; `s-expo-mode` is the coding discipline; release, SDK upgrade, new feature, Maestro, memory, quality gates, harness upkeep |
+| Agents | `.claude/agents/s-expo-*` | planner, builder, quality, reviewer, docs keeper — each with its tools and model |
+| Rules | `.claude/rules/s-expo-*` | non-negotiables loaded only for the files they cover |
+| Hooks | `.claude/settings.json` | blocks force-pushing `main`, `--no-verify`, production builds, edits to generated or secret files; runs `eslint --fix` after every edit |
+| Entry prompts | `.github/prompts/` | `/s-expo-dev`, `/s-expo-review`, `/s-expo-quality`, `/s-expo-release`, `/s-expo-evolve` in Copilot |
+
+A change runs **plan → test-first build → gates → review → memory → commit**, with at most two build/review loops. The full description, and how to use it from each tool: [`docs/harness.md`](./docs/harness.md).
+
+[harness-score](https://github.com/paladini/harness-score) rates the harness **L4 · Self-correcting, 105/105** (from L0, 51/105 before it existed), and CI keeps it there.
 
 ## CI/CD
 
@@ -139,6 +170,8 @@ Husky runs these on `pre-commit` and `commit-msg`. A commit that would fail CI n
 | `type-check.yml` | `tsc --noemit`, annotated inline | yes |
 | `test.yml` | `jest`, with the summary posted as a comment | yes |
 | `expo-doctor.yml` | only when `package.json` or `pnpm-lock.yaml` changed | yes, when it runs |
+| `quality.yml` | `pnpm quality`: CRAP < 10 and no duplication >= 0.8 | add it to the ruleset to make it blocking |
+| `harness.yml` | hook-rule tests and `harness-score --min-level 4` | add it to the ruleset to make it blocking |
 
 **End-to-end tests do not run automatically.** Two Maestro entry points exist and both are manual, because a full Android build plus an emulator run is around an hour of runner time — metered while the repository is private:
 
@@ -198,6 +231,9 @@ src/
 ├─ components/ui/  # design system
 ├─ lib/            # infrastructure: api client, i18n, storage, hooks
 └─ translations/   # en-us.json, pt-br.json
+.claude/           # agent harness: agents/, skills/, rules/, hooks/, settings.json
+docs/memory/       # project memory for every session and model
+tools/             # vendored quality tools: crapper, dryer, mutator
 ```
 
 Dependency rule — imports only flow to the right:
@@ -243,3 +279,18 @@ It was written by doing it once and hitting every wall. Follow it and the walls 
 ## Git workflow
 
 `main` is the only long-lived branch. Every change starts from it on a new branch named `feat/…`, `fix/…`, `chore/…`, `docs/…`, `refactor/…`, `test/…` or `ci/…`, and lands through a pull request. Commits follow Conventional Commits, enforced by commitlint.
+
+## Acknowledgements
+
+This template stands on other people's work. Thank you to:
+
+- **[Obytes](https://github.com/obytes/react-native-template-obytes)** — the React Native / Expo starter this project began as. Structure, CI and most tooling choices are theirs.
+- **[revfactory/harness](https://github.com/revfactory/harness)** — the harness method: team patterns, execution modes, skill design and the evolve loop behind `s-expo-harness`, `s-expo-evolve` and the `s-expo-dev` orchestrator.
+- **[Robert C. Martin (unclebob)](https://github.com/unclebob)** — [ub-mode](https://github.com/unclebob/ub-mode), the discipline behind `s-expo-mode` (itself building on [@poteto](https://github.com/poteto)'s rules), and the tools that hold code to it: [crapper](https://github.com/unclebob/crapper), [dryer](https://github.com/unclebob/dryer) and [mutator](https://github.com/unclebob/mutator).
+- **[Fernando Paladini](https://github.com/paladini/harness-score)** — harness-score, which measured where the harness stood and what was missing.
+
+Everything taken was adapted and renamed for this project; licenses, upstream commits and what changed are in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
+
+## License
+
+[MIT](./LICENSE).
