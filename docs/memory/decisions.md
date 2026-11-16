@@ -5,7 +5,7 @@ Choices that someone could reasonably undo, with the reason, so they are undone 
 ## Security fixes for transitive packages go through pnpm.overrides
 *2026-11-16*
 **Context:** 140 open Dependabot alerts, almost all in dev/build tooling (Expo CLI, Metro, ESLint, Jest) that pins its own dependencies, so Dependabot reports `security_update_not_possible` and opens no PR. Only `axios` and `zod` ship in the app.
-**Decision:** bump direct dependencies (`axios` 1.21.1, `zod` 4.6.7). For transitive ones, `pnpm.overrides` in `package.json` forces the first patched version **within the same major** (same `0.minor` for 0.x packages) — never across a major, which would break the tool that pins it.
+**Decision:** bump direct dependencies (`axios` 1.21.1, `zod` 4.6.7). For transitive ones, `pnpm.overrides` in `package.json` pins the **newest version within the same major** (same `0.minor` for 0.x packages) — never across a major, which would break the tool that pins it.
 **Why:** same-major patches are semver-compatible; check-all, quality, expo-doctor and both bundles stayed green.
 **Left open on purpose** (no fix in the installed major): `minimatch` 8/9/10 (fixed only in 11), `uuid` 7/8, `zod` 3 (pulled by a tool), `file-type` 16, `decode-uri-component` 0.2. They close when the parents move.
 **Revisit:** at every Expo SDK upgrade — drop overrides the new versions no longer need (`pnpm why <pkg>`), since an override left behind can hold a package back.
