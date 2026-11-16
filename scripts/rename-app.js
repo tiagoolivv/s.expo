@@ -22,7 +22,7 @@ const FILES = [
   'package.json',
   'env.ts',
   'app.config.ts',
-  'claude.md',
+  'AGENTS.md',
   '.vscode/settings.json',
   '.maestro/app/home.yaml',
   '.maestro/app/language.yaml',

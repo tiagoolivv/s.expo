@@ -21,11 +21,14 @@ How this template is put together and the rules that keep it that way. Everythin
 | Run the end-to-end flows | [testing/e2e.md](./testing/e2e.md) |
 | Move to the next Expo SDK | [guides/upgrading-sdk.md](./guides/upgrading-sdk.md) |
 | Set up your editor | [the README](../README.md#editor) |
-| Work on this with an AI agent | [ai-tooling.md](./ai-tooling.md) |
+| Work on this with an AI agent | [harness.md](./harness.md) · [ai-tooling.md](./ai-tooling.md) |
+| Know what was decided, and why | [memory/](./memory/README.md) |
 
 ## Contents
 
 - **[workflow.md](./workflow.md)** — the development loop, from classifying a change to merging it
+- **[harness.md](./harness.md)** — the agent harness: agents, skills, rules, hooks, quality tools, harness-score
+- **[memory/](./memory/README.md)** — project memory: decisions, lessons, glossary, work log
 - **[ai-tooling.md](./ai-tooling.md)** — MCP servers and skills worth using on this project
 - **architecture/** — [overview](./architecture/overview.md), [project structure](./architecture/project-structure.md), [data flow](./architecture/data-flow.md)
 - **conventions/** — [naming](./conventions/naming.md), [imports](./conventions/imports.md), [typescript](./conventions/typescript.md), [git](./conventions/git.md)

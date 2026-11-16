@@ -47,21 +47,16 @@ A skill is a folder under `.claude/skills/<name>/` containing a `SKILL.md`: YAML
 
 **The description is the trigger.** It is what the agent matches against the task, so it has to say what the skill does *and when to use it*. A vague description means the skill is never loaded, which is indistinguishable from not having written it.
 
-None ship with this template — the conventions live in `docs/` instead, which humans read too. These are the ones that would pay for themselves:
+This template ships its own, all prefixed `s-expo-`, as part of the agent harness described in [`harness.md`](./harness.md). The four this page used to recommend writing now exist — `s-expo-new-feature`, `s-expo-upgrade-sdk`, `s-expo-release` and `s-expo-maestro-flow` — next to the orchestrator `s-expo-dev`, the engineering discipline `s-expo-mode`, the quality gates, project memory, and the skills that maintain the harness itself. The full table is in [`AGENTS.md`](../AGENTS.md#agent-harness).
 
-| Skill | Why it beats leaving it in docs |
-| --- | --- |
-| `new-feature` | the checklist in [`guides/add-a-feature.md`](./guides/add-a-feature.md), loaded automatically instead of hoped for |
-| `upgrade-expo-sdk` | [`guides/upgrading-sdk.md`](./guides/upgrading-sdk.md) is a procedure with a strict order; a skill enforces the order |
-| `release` | the tag-to-EAS chain has a silent failure mode when `GH_TOKEN` is missing — worth encoding so nobody rediscovers it |
-| `maestro-flow` | writing a flow needs the `testID` rules and the app id; both are easy to get wrong |
+They keep the body short and link out to the `docs/` file rather than duplicating it. Two copies of a convention drift apart, and the one the agent reads will be the stale one.
 
-Keep the body short and link out to the `docs/` file rather than duplicating it. Two copies of a convention drift apart, and the one the agent reads will be the stale one.
+The Expo MCP server is declared in `.mcp.json` at the repository root, so Claude Code offers to enable it on first use instead of each person adding it by hand.
 
 ## Rules for using either
 
 **An MCP answer is evidence, not authority.** It can be out of date, or right about a different version. When it matters, check it against this repository: the installed version, the actual file, the real output.
 
-**Neither replaces the conventions.** An agent with every MCP in the world will still write a cross-feature import unless [`workflow.md`](./workflow.md) and [`architecture/overview.md`](./architecture/overview.md) are in front of it. That is why `claude.md` at the repository root points at those first.
+**Neither replaces the conventions.** An agent with every MCP in the world will still write a cross-feature import unless [`workflow.md`](./workflow.md) and [`architecture/overview.md`](./architecture/overview.md) are in front of it. That is why `AGENTS.md` at the repository root — which `CLAUDE.md` and `GEMINI.md` import — points at those first.
 
 **Never report a check you did not run.** An MCP saying a build succeeded is not the same as `pnpm check-all` passing, and `tsc` passing is not the same as the bundle building. Both distinctions have already bitten this repository — see the note at the end of [`workflow.md`](./workflow.md).

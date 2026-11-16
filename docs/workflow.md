@@ -82,7 +82,9 @@ Full detail in [conventions/](./conventions/imports.md) and [architecture/overvi
 ## 5 · Verify before committing
 
 ```bash
-pnpm check-all      # lint + type-check + translation lint + tests
+pnpm check-all      # lint + type-check + translation lint + tests + hook tests
+pnpm quality        # CRAP < 10 and no duplication >= 0.8 (Python 3.11+)
+pnpm quality:mutate src/path/changed-file.ts   # no surviving mutants
 ```
 
 This is the same set CI runs. Running it locally is the difference between finding a problem in ten seconds and finding it in ten minutes.
@@ -134,12 +136,13 @@ Releases are a separate, deliberate act, and they use this same loop: *New App V
 - [ ] Routes are still one-line re-exports
 - [ ] Strings translated in every locale
 - [ ] `pnpm check-all` green
+- [ ] `pnpm quality` green; no surviving mutants in changed files
 - [ ] Commit subject imperative, body explains why
 - [ ] Anything left undone is stated in the pull request
 
 ## For AI agents
 
-Read this file, then [architecture/overview.md](./architecture/overview.md) and [conventions/imports.md](./conventions/imports.md), before changing anything.
+Read [`AGENTS.md`](../AGENTS.md) and [memory/](./memory/README.md), this file, then [architecture/overview.md](./architecture/overview.md) and [conventions/imports.md](./conventions/imports.md), before changing anything. Code changes go through the `s-expo-dev` skill — see [harness.md](./harness.md).
 
 Two failure modes worth naming, because both have already happened in this repository:
 

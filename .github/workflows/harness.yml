@@ -1,0 +1,43 @@
+# ✍️ Description:
+# Keeps the agent harness honest. Two checks, both cheap and deterministic:
+#   - the gate hook's rules still hold (node --test, no install needed);
+#   - harness-score still rates the repository L4. It reads only files: no
+#     LLM, no network beyond fetching the pinned package.
+# What the harness is: docs/harness.md. Overrides: .harness-score.json.
+
+# 🚨 GITHUB SECRETS REQUIRED: NONE
+
+name: Harness
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    name: Harness (hooks + harness-score)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout project repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 📦 Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: 🪝 Test the hook rules
+        run: node --test ".claude/hooks/*.test.mjs"
+
+      - name: 📏 Score the harness (gate at L4)
+        run: npx --yes harness-score@1.10.0 . --min-level 4 --md harness-score.md
+
+      - name: 📝 Publish the report
+        if: always()
+        run: |
+          if [ -f harness-score.md ]; then cat harness-score.md >> "$GITHUB_STEP_SUMMARY"; fi

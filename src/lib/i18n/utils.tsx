@@ -26,6 +26,24 @@ export const translate = memoize(
     `${i18n.language}:${key}${options ? JSON.stringify(options) : ''}`,
 );
 
+export type ReloadStrategy = 'dev-reload' | 'restart' | 'web-reload' | 'none';
+
+// How to rebuild the layout after a direction flip, per platform and build.
+export function reloadStrategy(os: string, isDev: boolean): ReloadStrategy {
+  if (os === 'web')
+    return 'web-reload';
+  if (os !== 'ios' && os !== 'android')
+    return 'none';
+  return isDev ? 'dev-reload' : 'restart';
+}
+
+const RELOADERS: Record<ReloadStrategy, () => void> = {
+  'dev-reload': () => NativeModules.DevSettings.reload(),
+  'restart': () => RNRestart.restart(),
+  'web-reload': () => window.location.reload(),
+  'none': () => {},
+};
+
 export function changeLanguage(lang: Language) {
   i18n.changeLanguage(lang);
 
@@ -39,14 +57,7 @@ export function changeLanguage(lang: Language) {
   }
 
   I18nManager.forceRTL(shouldBeRTL);
-  if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    if (__DEV__)
-      NativeModules.DevSettings.reload();
-    else RNRestart.restart();
-  }
-  else if (Platform.OS === 'web') {
-    window.location.reload();
-  }
+  RELOADERS[reloadStrategy(Platform.OS, __DEV__)]();
 }
 
 export function useSelectedLanguage() {
@@ -55,8 +66,7 @@ export function useSelectedLanguage() {
   const setLanguage = useCallback(
     (lang: Language) => {
       setLang(lang);
-      if (lang !== undefined)
-        changeLanguage(lang as Language);
+      changeLanguage(lang);
     },
     [setLang],
   );

@@ -1,8 +1,3 @@
-import type {
-  GetNextPageParamFunction,
-  GetPreviousPageParamFunction,
-} from '@tanstack/react-query';
-
 export type PaginateQuery<T> = {
   results: T[];
   count: number;
@@ -37,20 +32,21 @@ export function getUrlParameters(
   const params = {};
   let match;
   while ((match = regex.exec(url))) {
-    if (match[1] !== null) {
-      // @ts-expect-error - Dynamic key assignment
-      params[match[1]] = match[2];
-    }
+    // @ts-expect-error - Dynamic key assignment
+    params[match[1]] = match[2];
   }
   return params;
 }
 
-export const getPreviousPageParam: GetNextPageParamFunction<
-  unknown,
-  PaginateQuery<unknown>
-> = page => getUrlParameters(page.previous)?.offset ?? null;
+// A page param reads the offset that the response's next or previous url
+// points at. Both directions are the same decision, so it lives here once.
+type PageDirection = 'next' | 'previous';
 
-export const getNextPageParam: GetPreviousPageParamFunction<
-  unknown,
-  PaginateQuery<unknown>
-> = page => getUrlParameters(page.next)?.offset ?? null;
+function pageParam(direction: PageDirection) {
+  return (page: PaginateQuery<unknown>): string | null =>
+    getUrlParameters(page[direction])?.offset || null;
+}
+
+export const getPreviousPageParam = pageParam('previous');
+
+export const getNextPageParam = pageParam('next');
