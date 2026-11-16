@@ -2,6 +2,9 @@
 
 Things that failed in a non-obvious way. Symptom first, because that is what you will be searching for. Newest first.
 
+## An override pinned to the first patched version can land in the next advisory
+*2026-11-16* · **Symptom:** after overriding `shell-quote` to 1.9.0 (the first patch for its alerts), Dependabot reopened a *critical* one: a newer advisory covers `>= 1.8.4 < 1.11.0`. Same for `follow-redirects` 1.16.0. **Cause:** the alert list was a snapshot; the first patched version is not the safe one. **Fix:** pin each override to the newest version on its line (`npm view <pkg>@^<major> version`). Do not use `pnpm update --depth Infinity <pkgs>` to refresh them — it rewrites every direct dependency in `package.json`.
+
 ## macOS `python3` is 3.9; the quality tools need 3.11+
 *2026-11-16* · **Symptom:** `quality: Python 3.11+ is required`. **Cause:** crapper/dryer/mutator use 3.11 syntax and tree-sitter wheels. **Fix:** `brew install python@3.12`; `scripts/quality.sh` finds it on its own.
 
