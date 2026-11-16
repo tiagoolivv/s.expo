@@ -1,15 +1,21 @@
+import { posix } from 'node:path';
+
 // Pure decisions behind the s-expo gate hook. Kept free of I/O so
 // `node --test .claude/hooks/` can pin every rule without spawning an agent.
 //
 // Each rule exists because the action is either irreversible or bypasses a
 // guardrail the project already relies on. The reason travels with the block,
 // so the agent reads why and can pick the supported path instead.
+//
+// This is a guardrail against accidents, not a security boundary: main is
+// protected by the GitHub ruleset, and secrets never live in the repository.
 
 const SHELL_RULES = [
   {
     test: command => /\bgit\s+push\b/.test(command)
-      && /(?:\s|^)(?:--force(?:-with-lease)?|-f)\b/.test(command)
-      && /\b(?:main|master)\b/.test(command),
+      && (/\s\+(?:refs\/heads\/)?(?:main|master)\b/.test(command)
+        || (/(?:\s|^)(?:--force(?:-[\w-]+)?|-[a-z]*f[a-z]*)\b/i.test(command)
+          && /\b(?:main|master)\b/.test(command))),
     reason: 'Force-pushing main rewrites shared history. main only changes through a pull request (docs/conventions/git.md).',
   },
   {
@@ -29,6 +35,14 @@ const SHELL_RULES = [
     reason: 'Store submission is a deliberate human decision, never an agent step.',
   },
 ];
+
+/** Files a shell command writes through `>`, `>>` or `tee`. */
+function shellWriteTargets(command) {
+  const targets = [];
+  for (const match of command.matchAll(/(?:>>?|\btee(?:\s+-a)?)\s*([^\s;&|<>]+)/g))
+    targets.push(match[1]);
+  return targets;
+}
 
 const PATH_RULES = [
   {
@@ -55,10 +69,10 @@ const PATH_RULES = [
 
 /** Normalises an absolute or relative path to a repo-relative POSIX path. */
 export function toRepoPath(filePath, projectDir) {
-  const posix = String(filePath).replaceAll('\\', '/');
   const root = String(projectDir).replaceAll('\\', '/').replace(/\/$/, '');
-  const relative = posix.startsWith(`${root}/`) ? posix.slice(root.length + 1) : posix;
-  return relative.replace(/^\.\//, '');
+  const normalized = posix.normalize(String(filePath).replaceAll('\\', '/'));
+  const relative = normalized.startsWith(`${root}/`) ? normalized.slice(root.length + 1) : normalized;
+  return posix.normalize(relative).replace(/^\.\//, '');
 }
 
 function firstMatch(rules, value) {
@@ -86,11 +100,23 @@ export function executableText(command) {
     if (heredoc)
       delimiter = heredoc[1];
   }
-  return kept.join('\n').replace(/'[^']*'|"(?:[^"\\]|\\.)*"/g, '\'\'');
+  // A quoted string with whitespace is prose (a message); drop it. A quoted
+  // single token ("--no-verify", "main") is an argument; keep it, unquoted.
+  return kept.join('\n').replace(/'([^']*)'|"((?:[^"\\]|\\.)*)"/g, (_, single, double) => {
+    const inner = single ?? double;
+    return /\s/.test(inner) ? '\'\'' : inner;
+  });
 }
 
-export function decideShell(command) {
-  return firstMatch(SHELL_RULES, executableText(command));
+export function decideShell(command, projectDir = '') {
+  const text = executableText(command);
+  const decision = firstMatch(SHELL_RULES, text);
+  if (!decision.allow)
+    return decision;
+  const blocked = shellWriteTargets(text)
+    .map(target => decidePath(target, projectDir))
+    .find(result => !result.allow);
+  return blocked ?? { allow: true };
 }
 
 export function decidePath(filePath, projectDir) {
@@ -101,9 +127,10 @@ export function decidePath(filePath, projectDir) {
 export function decide(event, projectDir) {
   const input = event?.tool_input ?? {};
   if (event?.tool_name === 'Bash')
-    return decideShell(input.command);
-  if (input.file_path)
-    return decidePath(input.file_path, projectDir);
+    return decideShell(input.command, projectDir);
+  const filePath = input.file_path ?? input.notebook_path;
+  if (filePath)
+    return decidePath(filePath, projectDir);
   return { allow: true };
 }
 

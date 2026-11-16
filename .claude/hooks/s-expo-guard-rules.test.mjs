@@ -12,6 +12,13 @@ describe('decideShell', () => {
   const blocked = [
     'git push --force origin main',
     'git push -f origin master',
+    'git push origin +main',
+    'git push -uf origin main',
+    'git push --force "main"',
+    'git commit "--no-verify" -m wip',
+    'echo SECRET=1 > .env.local',
+    'printf x | tee -a .env',
+    'cat > ios/Podfile <<EOF\nx\nEOF',
     'git push --force-with-lease origin main',
     'git commit -m "x" --no-verify',
     'git push --no-verify',
@@ -46,6 +53,8 @@ describe('decideShell', () => {
     'git commit -m "docs: never use --no-verify"',
     'git commit -q -F - <<\'EOF\'\nchore: block --no-verify and git push --force origin main\n\nCo-Authored-By: x\nEOF\ngit log --oneline -1',
     'echo \'rm -rf /\'',
+    'cp .env.development.example .env.local.example',
+    'cat .env.development.example',
   ];
   for (const command of allowed) {
     it(`allows: ${command || '(empty)'}`, () => {
@@ -64,6 +73,8 @@ describe('decidePath', () => {
     `${ROOT}/pnpm-lock.yaml`,
     `${ROOT}/uniwind-types.d.ts`,
     `${ROOT}/tools/crapper/src/crapper/cli.py`,
+    `${ROOT}/src/../ios/Podfile`,
+    `${ROOT}/./android/x.gradle`,
   ];
   for (const path of blocked) {
     it(`blocks: ${path}`, () => {
@@ -93,6 +104,11 @@ describe('decide', () => {
 
   it('routes file events to the path rules', () => {
     const event = { tool_name: 'Edit', tool_input: { file_path: `${ROOT}/ios/Podfile` } };
+    assert.equal(decide(event, ROOT).allow, false);
+  });
+
+  it('checks the notebook path of NotebookEdit events', () => {
+    const event = { tool_name: 'NotebookEdit', tool_input: { notebook_path: `${ROOT}/ios/x.ipynb` } };
     assert.equal(decide(event, ROOT).allow, false);
   });
 
