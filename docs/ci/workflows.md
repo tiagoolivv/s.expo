@@ -48,7 +48,7 @@ Solid arrows always fire. Dotted arrows depend on a condition — a changed path
 
 These three are the gate. They need no secret and finish in a couple of minutes. If you protect `main` with required status checks, these are the ones to require.
 
-Two more run on every pull request and push to `main`. They are not required checks until you add them to the ruleset:
+Two more run on every pull request and push to `main`, and **are** required checks in the `Protect Main Branch` ruleset (added 2026-11-16) — a pull request cannot merge while either fails. Both run on every pull request with no path filter, which a required check needs: a check that never starts would block the merge forever.
 
 | Workflow | Runs | Fails when |
 | --- | --- | --- |

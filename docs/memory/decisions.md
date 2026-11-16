@@ -2,6 +2,12 @@
 
 Choices that someone could reasonably undo, with the reason, so they are undone on purpose or not at all. Newest first. Format: context · decision · why · revisit if.
 
+## Quality and Harness are required checks on main
+*2026-11-16*
+**Decision:** the `Protect Main Branch` ruleset requires `Quality (CRAP + duplication)` and `Harness (hooks + harness-score)` to pass before a merge.
+**Why:** a gate that can be ignored drifts; the thresholds only hold if a pull request cannot land below them.
+**Trap:** renaming either job changes its check name — update the ruleset in the same change, or every PR blocks waiting for a check that no longer exists.
+
 ## Keep react-native-edge-to-edge for now
 *2026-11-16*
 **Context:** React Native Directory now marks `react-native-edge-to-edge` unmaintained, which fails `expo-doctor`. It provides `SystemBars` in `focus-aware-status-bar.tsx` and a config plugin in `app.config.ts`.
