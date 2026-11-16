@@ -2,6 +2,13 @@
 
 Choices that someone could reasonably undo, with the reason, so they are undone on purpose or not at all. Newest first. Format: context · decision · why · revisit if.
 
+## Keep react-native-edge-to-edge for now
+*2026-11-16*
+**Context:** React Native Directory now marks `react-native-edge-to-edge` unmaintained, which fails `expo-doctor`. It provides `SystemBars` in `focus-aware-status-bar.tsx` and a config plugin in `app.config.ts`.
+**Decision:** exclude it from `expo.doctor.reactNativeDirectoryCheck` instead of replacing it in a dependency-patch PR.
+**Why:** replacing it changes status-bar behaviour on device, which needs its own change verified on iOS and Android.
+**Revisit if:** the next SDK upgrade — move `SystemBars` to Expo's own edge-to-edge API and drop the package.
+
 ## Agent harness in the repository
 *2026-11-16*
 **Context:** work happens in short conversations, often switching between AI tools and models when one hits its usage limit. Context re-explained in chat is lost each time.
