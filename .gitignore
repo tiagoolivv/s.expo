@@ -42,3 +42,15 @@ expo-env.d.ts
 # only ones tracked; `pnpm env:use <env>` copies one onto .env.local.
 .env*
 !.env*.example
+
+# Quality tools (tools/crapper, tools/dryer, tools/mutator). Each keeps its own
+# virtualenv; their reports go to .metrics/ and mutation workers to target/.
+tools/*/.venv/
+tools/**/__pycache__/
+tools/**/*.egg-info/
+.metrics/
+target/
+
+# Intermediate artifacts the agent harness writes between phases (see
+# .claude/skills/s-expo-dev). Kept on disk for review, never committed.
+_workspace/

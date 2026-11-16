@@ -42,6 +42,11 @@ export default antfu(
       'uniwind-types.d.ts',
       'expo-env.d.ts',
       'migration/*',
+      // Vendored Python quality tools and what they write; see docs/harness.md.
+      'tools/',
+      'target/',
+      '.metrics/',
+      '_workspace/',
     ],
   },
 
@@ -64,6 +69,12 @@ export default antfu(
             '/ios',
             'README.md',
             'README-project.md',
+            // Names agent tools look for verbatim; renaming them hides them.
+            'AGENTS.md',
+            'CLAUDE.md',
+            'GEMINI.md',
+            'SKILL.md',
+            'THIRD_PARTY_NOTICES.md',
             'ISSUE_TEMPLATE.md',
             'PULL_REQUEST_TEMPLATE.md',
           ],
