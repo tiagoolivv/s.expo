@@ -1,6 +1,6 @@
 # Project memory
 
-What a new session — any person, any AI tool, any model — should know before touching this repository, and did not learn from `AGENTS.md`. Committed so it travels with the code. How to read and write it: [`.claude/skills/s-expo-memory/SKILL.md`](../../.claude/skills/s-expo-memory/SKILL.md).
+What a new session — any person, any AI tool, any model — should know before touching this repository, and did not learn from `AGENTS.md`. Committed so it travels with the code. How to read and write it: [`.agents/skills/s-expo-memory/SKILL.md`](../../.agents/skills/s-expo-memory/SKILL.md).
 
 | File | What is in it |
 | --- | --- |

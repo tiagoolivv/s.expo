@@ -1,6 +1,6 @@
 # AGENTS.md — s-expo
 
-Instructions for any AI coding agent (Claude Code, Codex, Gemini, Cursor, Copilot, OpenCode, …) and any model. This file is the single entry point: `CLAUDE.md` and `GEMINI.md` only import it. Everything an agent needs to work here without a long chat is in this repository.
+Instructions for any AI coding agent, in any tool, on any model. This file is the single entry point; everything an agent needs to work here without a long chat is in this repository, in plain Markdown under `.agents/` and `docs/`. Tool-specific wiring is optional and listed under [Tool adapters](#tool-adapters).
 
 `s-expo` is an Expo template for responsive multi-platform apps (phone/tablet, iOS/Android). Derived from the Obytes React Native starter v9.0.0, then trimmed to a single start screen with no authentication.
 
@@ -8,8 +8,8 @@ Instructions for any AI coding agent (Claude Code, Codex, Gemini, Cursor, Copilo
 
 1. Read this file, then [`docs/memory/README.md`](docs/memory/README.md) — decisions, lessons and terms that are not obvious from the code.
 2. Read [`docs/workflow.md`](docs/workflow.md) before changing anything. It is the development loop.
-3. Pick the skill for the task (table below) and follow it. Skills are plain Markdown in `.claude/skills/<name>/SKILL.md` (also at `.agents/skills/`); any model can read and follow one, with or without a skill loader.
-4. Rules scoped to the files you touch are in `.claude/rules/` — read the ones whose `paths:` match.
+3. Pick the skill for the task (table below) and follow it. Skills are plain Markdown in `.agents/skills/<name>/SKILL.md`; any model can read and follow one, with or without a skill loader.
+4. Rules scoped to the files you touch are in `.agents/rules/` — read the ones whose `paths:` match.
 5. End by recording anything a future session needs in `docs/memory/` (`s-expo-memory` skill).
 
 ## Stack
@@ -38,7 +38,8 @@ src/
 ├─ components/ui/  # design system
 ├─ lib/            # api, i18n, storage, hooks, utils, test-utils
 └─ translations/   # en-us.json, pt-br.json
-.claude/           # agent harness: agents/, skills/, rules/, hooks/, settings.json
+.agents/           # agent harness, tool-neutral: skills/, agents/, rules/, hooks/
+.claude/           # Claude Code adapter only: links into .agents/ + settings.json
 docs/              # human + agent documentation; docs/memory/ is project memory
 tools/             # vendored quality tools (do not edit)
 ```
@@ -93,21 +94,48 @@ Built with [revfactory/harness](https://github.com/revfactory/harness) and [uncl
 | `s-expo-harness` | auditing or extending the harness itself |
 | `s-expo-evolve` | turning repeated corrections into harness changes |
 
-| Agent (`.claude/agents/`) | Role | Model |
+| Agent (`.agents/agents/`) | Role | Tier |
 | --- | --- | --- |
-| `s-expo-planner` | read-only: classify, map files, first failing test, units | opus |
-| `s-expo-builder` | writes code test-first under `s-expo-mode` | opus |
-| `s-expo-quality` | runs gates, reports numbers, never edits | sonnet |
-| `s-expo-reviewer` | read-only diff review: correctness, conventions, gates | opus |
-| `s-expo-docs-keeper` | updates `docs/memory/` and stale docs | sonnet |
+| `s-expo-planner` | read-only: classify, map files, first failing test, units | deep |
+| `s-expo-builder` | writes code test-first under `s-expo-mode` | deep |
+| `s-expo-quality` | runs gates, reports numbers, never edits | standard |
+| `s-expo-reviewer` | read-only diff review: correctness, conventions, gates | deep |
+| `s-expo-docs-keeper` | updates `docs/memory/` and stale docs | standard |
 
-Hooks (`.claude/settings.json`, Claude Code; Codex reads the same events): a **gate** blocks force-pushing `main`, `--no-verify`, recursive deletes of root/home/project, production EAS builds and submissions, and edits to `ios/`, `android/`, real `.env` files, the lockfile, generated `.d.ts` and `tools/`; a **feedback** hook runs `eslint --fix` on every edited file. Agents without hooks must follow the same rules by hand.
+An agent file is a role. A tool with subagents runs it as one; in any other tool, play the role yourself for that phase (the `s-expo-dev` skill says how).
+
+### Model tiers
+
+Agents name a **tier**, never a vendor's model, so they survive model changes and work in every tool.
+
+| Tier | Means | Pick |
+| --- | --- | --- |
+| `deep` | design, writing code, cross-checking a diff | the strongest reasoning model your tool offers — or simply the model of the current session |
+| `standard` | running commands, parsing output, structured writing | a faster, cheaper model if your tool has one; otherwise the session model |
+
+If the model a tier maps to is unavailable, use the session model. A tier is guidance, not a requirement — the gates decide whether the work is right.
+
+### Guardrails
+
+Never, in any tool: force-push `main`, skip git hooks with `--no-verify`, recursively delete the root, home or project, run a production EAS build or store submission, or edit `ios/`, `android/`, real `.env` files, `pnpm-lock.yaml`, generated `*.d.ts` or `tools/`. Run `eslint --fix` on what you edit. Where a tool supports hooks, `.agents/hooks/` enforces this; everywhere, the five required CI checks catch what slips through.
+
+### Tool adapters
+
+Optional wiring that makes a tool load the harness natively. Nothing in `.agents/` depends on it.
+
+| Tool | Adapter |
+| --- | --- |
+| Claude Code | `CLAUDE.md` imports this file; `.claude/skills`, `.claude/agents`, `.claude/rules` hold one link per item into `.agents/` (`pnpm test:hooks` fails if one is missing); `.claude/settings.json` wires `.agents/hooks/` and permissions; `.mcp.json` adds the Expo MCP server |
+| Codex, OpenCode and other `AGENTS.md` / `.agents/skills` readers | nothing to wire: they read this file and `.agents/skills/` directly; hooks are not wired, the guardrails above apply |
+| GitHub Copilot | reads this file; `.github/prompts/s-expo-*.prompt.md` are entry points into the main skills |
+| Cursor, Windsurf, Cline, Zed and others | read this file; point the agent at the skill named in the table above |
 
 **Harness change history:**
 
 | Date | Change | Target | Reason |
 | --- | --- | --- | --- |
 | 2026-11-16 | Harness built: 5 agents, 10 skills, 7 scoped rules, gate + lint hooks, `docs/memory/`, quality tools, harness-score in CI | all | keep full project context in the repo for short, multi-model sessions |
+| 2026-11-16 | Made tool-neutral: harness moved to `.agents/` (`.claude/` is an adapter), agents name a tier instead of a model, `GEMINI.md` removed | all | work the same in any tool and survive model changes |
 
 ## Known rough edges
 

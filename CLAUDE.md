@@ -1,11 +1,10 @@
 @AGENTS.md
 
-# Claude Code specifics
+# Claude Code adapter
 
-Everything about the project is in `AGENTS.md` (imported above) so every tool reads the same instructions. Only what is particular to Claude Code lives here.
+`AGENTS.md` (imported above) holds everything, for every tool. This file only says how Claude Code loads it.
 
-- **Skills** in `.claude/skills/` load on their own from their descriptions, or by name (`/s-expo-dev`, `/s-expo-mode`, …).
-- **Subagents** in `.claude/agents/` are called with `subagent_type: "s-expo-planner"` etc. The `s-expo-dev` skill says when.
-- **Rules** in `.claude/rules/` load automatically for files matching their `paths:`.
-- **Hooks** in `.claude/settings.json`: the gate hook may block a command or edit with `s-expo guard: blocked. <reason>` — take the supported path it names instead of working around it. The lint hook may report ESLint errors after an edit; fix them before moving on.
-- Your per-user auto memory is for personal preferences. Facts about this project go to `docs/memory/` so other tools and models see them too.
+- `.claude/skills`, `.claude/agents` and `.claude/rules` are links into `.agents/`, so skills load from their descriptions or by name (`/s-expo-dev`), agents run as subagents (`subagent_type: "s-expo-planner"`), and rules load for files matching their `paths:`.
+- An agent's `tier` maps to its `model:` field: `deep` → `inherit` (the session model), `standard` → `sonnet`. If a model alias stops resolving, change that one word to `inherit`.
+- `.claude/settings.json` wires the hooks in `.agents/hooks/`. A gate block reads `s-expo guard: blocked. <reason>` — take the supported path it names. The lint hook may report ESLint errors after an edit; fix them before moving on.
+- Per-user auto memory is for personal preferences. Facts about this project go to `docs/memory/`, where every tool reads them.

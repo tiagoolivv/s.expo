@@ -43,7 +43,7 @@
     "check-all": "pnpm run lint && pnpm run type-check && pnpm run lint:translations && pnpm run test && pnpm run test:hooks",
     "test:ci": "pnpm run test --coverage",
     "test:watch": "pnpm run test --watch",
-    "test:hooks": "node --test \".claude/hooks/*.test.mjs\"",
+    "test:hooks": "node --test \".agents/hooks/*.test.mjs\"",
     "coverage": "jest --coverage --coverageReporters=lcov --coverageReporters=json-summary",
     "quality": "pnpm run quality:crap && pnpm run quality:dry",
     "quality:crap": "sh scripts/quality.sh crap src",

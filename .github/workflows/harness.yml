@@ -32,7 +32,7 @@ jobs:
           node-version: 24
 
       - name: 🪝 Test the hook rules
-        run: node --test ".claude/hooks/*.test.mjs"
+        run: node --test ".agents/hooks/*.test.mjs"
 
       - name: 📏 Score the harness (gate at L4)
         run: npx --yes harness-score@1.10.0 . --min-level 4 --md harness-score.md

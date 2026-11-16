@@ -1,6 +1,6 @@
 ---
 name: s-expo-memory
-description: Read and write s-expo's in-repo project memory (docs/memory/) — glossary, decisions, lessons, work log — so any session, with any model, starts with the project's context instead of a long chat. Use at the start of a session or task to load context, and when asked "remember this", "record the decision", "what did we decide about X", "why is it like this", "add a lesson", "update memory", or at the end of a change (Phase 5 of s-expo-dev).
+description: Read and write s-expo's in-repo project memory (docs/memory/) — glossary, decisions, lessons, work log — so any session, in any tool and on any model, starts with the project's context instead of a long chat. Use at the start of a session or task to load context, and when asked "remember this", "record the decision", "what did we decide about X", "why is it like this", "add a lesson", "update memory", or at the end of a change (Phase 5 of s-expo-dev).
 ---
 
 # s-expo memory
@@ -26,7 +26,7 @@ Chat history is lost when a conversation ends or the model changes. `docs/memory
 
 - **Dates are absolute** (`2026-11-16`), never "yesterday".
 - **Say why.** A decision without its reason gets reverted by the next reader.
-- **One fact, one place.** If `docs/` already explains it, link there. If a memory entry becomes a rule everyone must follow, promote it to `AGENTS.md` or a `.claude/rules/` file and leave a link behind.
+- **One fact, one place.** If `docs/` already explains it, link there. If a memory entry becomes a rule everyone must follow, promote it to `AGENTS.md` or a `.agents/rules/` file and leave a link behind.
 - **Correct, do not append contradictions.** When an entry turns out wrong, edit or delete it.
 - **Never store secrets**, tokens, personal data or the content of `.env` files.
 - Keep each entry to a few lines. Memory is scanned, not studied.
@@ -45,4 +45,4 @@ Chat history is lost when a conversation ends or the model changes. `docs/memory
 
 ## Relation to tool-specific memory
 
-Claude Code also keeps a per-user memory outside the repository. Use that for personal preferences; put anything about **this project** here, where every tool and teammate can read it.
+Some tools keep their own per-user memory outside the repository. Use that for personal preferences only; put anything about **this project** here, where every tool, model and teammate can read it.

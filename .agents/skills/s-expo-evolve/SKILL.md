@@ -8,8 +8,8 @@ description: Evolve s-expo's harness from experience — collect what went wrong
 Adapted from revfactory/harness v2 `evolve` (Apache-2.0). The harness is not a fixed artifact: every correction you had to give by hand is a defect in it. This skill turns those corrections into durable changes so the next session — on any model — starts better.
 
 ## Phase 1 — collect the delta
-1. Read `AGENTS.md` (harness change history), `.claude/agents/`, `.claude/skills/`, `.claude/rules/`.
-2. `git log --oneline -- .claude AGENTS.md docs/memory` — what changed since the harness was built, and why.
+1. Read `AGENTS.md` (harness change history), `.agents/agents/`, `.agents/skills/`, `.agents/rules/`.
+2. `git log --oneline -- .agents .claude AGENTS.md docs/memory` — what changed since the harness was built, and why.
 3. If `_workspace/` exists, check the last run left the artifacts the orchestrator promises, in the format the skills ask for. Missing artifacts mean a phase was skipped.
 4. Ask the user what to improve — unless they already said. Without feedback, still propose changes when you see:
    - the same correction twice;
@@ -24,7 +24,7 @@ Adapted from revfactory/harness v2 `evolve` (Apache-2.0). The harness is not a f
 | role missing or overlapping | the agent file (new agent → s-expo-harness) |
 | wrong order of work | the orchestrator (`s-expo-dev`) |
 | skill not loading | the skill `description` |
-| a rule broken repeatedly | a `.claude/rules/` file, or a gate hook if it must be impossible |
+| a rule broken repeatedly | a `.agents/rules/` file, or a gate hook if it must be impossible |
 | something learned about the project, not the harness | `docs/memory/` (s-expo-memory) |
 | too slow / too many tokens | orchestrator scale, model choice |
 

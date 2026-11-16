@@ -12,7 +12,9 @@ Terms with a specific meaning in this repository. Add one when code gives a conc
 | **check-all** | `pnpm check-all`: lint, type-check, translation lint, Jest and the hook tests. The local mirror of the CI merge gates. |
 | **quality gates** | the second layer after check-all: CRAP (crapper), duplication (dryer), mutation (mutator), from `tools/`. |
 | **CRAP** | Change Risk Anti-Patterns score, `CC² × (1 − coverage)³ + CC`. Kept under 10 per function. |
-| **harness** | everything around the model that steers and checks it: `AGENTS.md`, `.claude/` agents, skills, rules and hooks, `docs/memory/`, and the gates. |
+| **harness** | everything around the model that steers and checks it: `AGENTS.md`, the skills, agents, rules and hooks in `.agents/`, `docs/memory/`, and the gates. Tool folders such as `.claude/` are only adapters. |
 | **orchestrator** | the `s-expo-dev` skill — runs a change through plan → build → gates → review → memory. |
+| **tier** | the kind of model an agent needs — `deep` (design, code, review) or `standard` (procedural). Each tool maps it to its own models; see "Model tiers" in `AGENTS.md`. |
+| **adapter** | tool-specific wiring (`CLAUDE.md`, `.claude/`, `.github/prompts/`) that only links or points into `.agents/`. |
 | **`_workspace/`** | git-ignored folder where harness phases leave their artifacts (`{phase}_{agent}_{artifact}.md`). |
 | **release chain** | New App Version → release PR → Tag Release → New GitHub Release → EAS QA build. See `s-expo-release`. |
