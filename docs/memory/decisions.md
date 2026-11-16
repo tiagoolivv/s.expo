@@ -2,11 +2,11 @@
 
 Choices that someone could reasonably undo, with the reason, so they are undone on purpose or not at all. Newest first. Format: context · decision · why · revisit if.
 
-## Quality and Harness are required checks on main
+## Five required checks on main
 *2026-11-16*
-**Decision:** the `Protect Main Branch` ruleset requires `Quality (CRAP + duplication)` and `Harness (hooks + harness-score)` to pass before a merge.
+**Decision:** the `Protect Main Branch` ruleset requires `Lint TS (eslint, prettier)`, `Type Check (tsc)`, `Tests (jest)`, `Quality (CRAP + duplication)` and `Harness (hooks + harness-score)` to pass before a merge. `Expo Doctor` stays off the list because it is path-filtered.
 **Why:** a gate that can be ignored drifts; the thresholds only hold if a pull request cannot land below them.
-**Trap:** renaming either job changes its check name — update the ruleset in the same change, or every PR blocks waiting for a check that no longer exists.
+**Trap:** renaming one of these jobs changes its check name — update the ruleset in the same change, or every PR blocks waiting for a check that no longer exists.
 
 ## Keep react-native-edge-to-edge for now
 *2026-11-16*

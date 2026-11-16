@@ -46,9 +46,9 @@ Solid arrows always fire. Dotted arrows depend on a condition — a changed path
 | `type-check.yml` | `tsc --noemit` | types do not check |
 | `test.yml` | `jest` | a unit test fails |
 
-These three are the gate. They need no secret and finish in a couple of minutes. If you protect `main` with required status checks, these are the ones to require.
+These three are the gate. They need no secret and finish in a couple of minutes, and the `Protect Main Branch` ruleset requires all three.
 
-Two more run on every pull request and push to `main`, and **are** required checks in the `Protect Main Branch` ruleset (added 2026-11-16) — a pull request cannot merge while either fails. Both run on every pull request with no path filter, which a required check needs: a check that never starts would block the merge forever.
+Two more run on every pull request and push to `main`, and are required too — five required checks in all; a pull request cannot merge while any fails. Every required check runs on every pull request with no path filter, which a required check needs: a check that never starts would block the merge forever. That is why `expo-doctor.yml`, filtered to dependency changes, is not on the list.
 
 | Workflow | Runs | Fails when |
 | --- | --- | --- |

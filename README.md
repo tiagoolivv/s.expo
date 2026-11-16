@@ -166,10 +166,10 @@ Husky runs these on `pre-commit` and `commit-msg`. A commit that would fail CI n
 
 | Workflow | Runs | Blocking |
 | --- | --- | --- |
-| `lint-ts.yml` | `eslint .`, annotated inline by reviewdog | yes |
-| `type-check.yml` | `tsc --noemit`, annotated inline | yes |
-| `test.yml` | `jest`, with the summary posted as a comment | yes |
-| `expo-doctor.yml` | only when `package.json` or `pnpm-lock.yaml` changed | yes, when it runs |
+| `lint-ts.yml` | `eslint .`, annotated inline by reviewdog | yes — required by the `main` ruleset |
+| `type-check.yml` | `tsc --noemit`, annotated inline | yes — required by the `main` ruleset |
+| `test.yml` | `jest`, with the summary posted as a comment | yes — required by the `main` ruleset |
+| `expo-doctor.yml` | only when `package.json` or `pnpm-lock.yaml` changed | fails the PR, but not required — a path-filtered check cannot be |
 | `quality.yml` | `pnpm quality`: CRAP < 10 and no duplication >= 0.8 | yes — required by the `main` ruleset |
 | `harness.yml` | hook-rule tests and `harness-score --min-level 4` | yes — required by the `main` ruleset |
 

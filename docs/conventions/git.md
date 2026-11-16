@@ -42,7 +42,7 @@ Never use `--no-verify` to get around a red hook. If the hook is wrong, fix the 
 
 Every change reaches `main` through a pull request. CI runs lint, type-check and the unit tests on each one — see [../ci/workflows.md](../ci/workflows.md).
 
-This is enforced, not merely agreed. A ruleset named *Protect Main Branch* requires a pull request on `refs/heads/main` and lists **no bypass actors** — not even a repository admin. A direct push is refused:
+This is enforced, not merely agreed. A ruleset named *Protect Main Branch* requires a pull request on `refs/heads/main` and lists **no bypass actors** — not even a repository admin. It also requires five status checks to pass: `Lint TS (eslint, prettier)`, `Type Check (tsc)`, `Tests (jest)`, `Quality (CRAP + duplication)` and `Harness (hooks + harness-score)`. A direct push is refused:
 
 ```
 remote: error: GH013: Repository rule violations found for refs/heads/main.
