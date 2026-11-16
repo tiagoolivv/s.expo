@@ -14,7 +14,7 @@ const SHELL_RULES = [
   {
     test: command => /\bgit\s+push\b/.test(command)
       && (/\s\+(?:refs\/heads\/)?(?:main|master)\b/.test(command)
-        || (/(?:\s|^)(?:--force(?:-[\w-]+)?|-[a-z]*f[a-z]*)\b/i.test(command)
+        || (/(?:\s|^)(?:--force(?:-[\w-]+)?|-[a-z]*f[a-z]*)\b/.test(command)
           && /\b(?:main|master)\b/.test(command))),
     reason: 'Force-pushing main rewrites shared history. main only changes through a pull request (docs/conventions/git.md).',
   },
@@ -110,9 +110,13 @@ export function executableText(command) {
 
 export function decideShell(command, projectDir = '') {
   const text = executableText(command);
-  const decision = firstMatch(SHELL_RULES, text);
-  if (!decision.allow)
-    return decision;
+  // Judge each command of a chain on its own: a flag of one command and a
+  // branch name in another must not combine into a match.
+  for (const segment of text.split(/&&|\|\||[;|\n]/)) {
+    const decision = firstMatch(SHELL_RULES, segment);
+    if (!decision.allow)
+      return decision;
+  }
   const blocked = shellWriteTargets(text)
     .map(target => decidePath(target, projectDir))
     .find(result => !result.allow);

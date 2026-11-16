@@ -14,6 +14,7 @@ describe('decideShell', () => {
     'git push -f origin master',
     'git push origin +main',
     'git push -uf origin main',
+    'git fetch && git push --force origin main',
     'git push --force "main"',
     'git commit "--no-verify" -m wip',
     'echo SECRET=1 > .env.local',
@@ -54,6 +55,9 @@ describe('decideShell', () => {
     'git commit -q -F - <<\'EOF\'\nchore: block --no-verify and git push --force origin main\n\nCo-Authored-By: x\nEOF\ngit log --oneline -1',
     'echo \'rm -rf /\'',
     'cp .env.development.example .env.local.example',
+    // Each command in a chain is judged alone: -F belongs to git commit and
+    // main to gh pr create, so nothing here force-pushes main.
+    'git commit -q -F msg.txt && git push -u origin chore/x && gh pr create --base main',
     'cat .env.development.example',
   ];
   for (const command of allowed) {
