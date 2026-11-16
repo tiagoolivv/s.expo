@@ -1,0 +1,46 @@
+# ✍️ Description:
+# The ub-mode "make it right" layer on top of lint, types and tests:
+#   - CRAP score per function under 10 (tools/crapper, with Jest coverage);
+#   - no structural duplication at or above 0.8 (tools/dryer).
+# Mutation testing (tools/mutator) reruns Jest once per mutant, so it stays a
+# local step on the files a change touches: pnpm quality:mutate <file>.
+# See .claude/skills/s-expo-quality-gates/SKILL.md.
+
+# 🚨 GITHUB SECRETS REQUIRED: NONE
+
+name: Quality (CRAP + duplication)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality (CRAP + duplication)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout project repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 📦 Setup Node + PNPM + install deps
+        uses: ./.github/actions/setup-node-pnpm-install
+
+      - name: 🐍 Setup Python for the quality tools
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: 🧮 CRAP and duplication
+        run: pnpm run quality
+
+      - name: 📝 Publish the CRAP table
+        if: always()
+        run: |
+          if [ -f .metrics/crap.edn ]; then
+            { echo '### CRAP snapshot'; echo '```clojure'; cat .metrics/crap.edn; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi

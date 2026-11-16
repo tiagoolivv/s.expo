@@ -48,6 +48,15 @@ Solid arrows always fire. Dotted arrows depend on a condition — a changed path
 
 These three are the gate. They need no secret and finish in a couple of minutes. If you protect `main` with required status checks, these are the ones to require.
 
+Two more run on every pull request and push to `main`. They are not required checks until you add them to the ruleset:
+
+| Workflow | Runs | Fails when |
+| --- | --- | --- |
+| `quality.yml` | `pnpm quality` — crapper and dryer from `tools/`, on Python 3.12 | a function in `src/` has CRAP > 10, or two functions are >= 0.8 similar |
+| `harness.yml` | `node --test` on the hook rules, then `harness-score --min-level 4` | a hook rule regressed, or the agent harness dropped below L4 |
+
+Both are described in [`../harness.md`](../harness.md). Mutation testing is deliberately not here: it reruns Jest once per mutant, so it stays a local step on the files a change touches.
+
 ## Conditional
 
 | Workflow | Trigger |
