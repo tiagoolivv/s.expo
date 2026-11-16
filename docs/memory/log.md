@@ -2,6 +2,7 @@
 
 One entry per change that went through the harness, newest first: date · type · what · why. Detail lives in the commits and the pull request; this is the index a new session skims.
 
+- **2026-11-16** · fix(deps) · `axios` 1.21.1, `zod` 4.6.7, and 29 same-major `pnpm.overrides` for vulnerable tooling packages · Dependabot could not patch transitive dependencies on its own.
 - **2026-11-16** · release · **v0.2.0** (minor) · tool-neutral harness and five required checks; tag, GitHub release and EAS QA build fired from the PR merge.
 - **2026-11-16** · refactor · harness moved to `.agents/` with `.claude/` as a per-item link adapter; agents name a tier (`deep`/`standard`) instead of a model; `GEMINI.md` removed · work the same in any tool and survive model changes.
 - **2026-11-16** · docs(ci) · `main` ruleset requires Lint TS, Type Check, Tests, Quality and Harness · a gate that can be skipped drifts.
