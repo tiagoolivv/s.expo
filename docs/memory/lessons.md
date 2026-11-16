@@ -6,7 +6,7 @@ Things that failed in a non-obvious way. Symptom first, because that is what you
 *2026-11-16* · **Symptom:** `quality: Python 3.11+ is required`. **Cause:** crapper/dryer/mutator use 3.11 syntax and tree-sitter wheels. **Fix:** `brew install python@3.12`; `scripts/quality.sh` finds it on its own.
 
 ## A gate hook that greps the raw command blocks text, not actions
-*2026-11-16* · **Symptom:** the guard blocked a `git commit` whose *message* mentioned `--no-verify`, and an `echo` of a JSON event containing `git push --force origin main`. **Cause:** PreToolUse sees the whole shell string, quotes and heredoc bodies included. **Fix:** the rules match `executableText(command)`, which drops heredoc bodies and quoted strings; both cases are pinned in `pnpm test:hooks`.
+*2026-11-16* · **Symptom:** the guard blocked a `git commit` whose *message* mentioned `--no-verify`, and an `echo` of a JSON event containing `git push --force origin main`. **Cause:** PreToolUse sees the whole shell string, quotes and heredoc bodies included. **Fix:** the rules match `executableText(command)`, which drops heredoc bodies and prose in quotes, and judge each command of a `&&`/`;`/`|` chain on its own — `git commit -F` plus `gh pr create --base main` once added up to a force-push of main. All cases are pinned in `pnpm test:hooks`.
 
 ## Nothing done with `GITHUB_TOKEN` triggers another workflow
 **Symptom:** the release PR opens with no checks, or the tag lands and no release appears, or the release publishes and no EAS build starts. **Cause:** GitHub suppresses workflow triggers from the automatic token. **Fix:** every step that starts the next one uses `secrets.GH_TOKEN` (fine-grained PAT: Contents + Pull requests, read/write).
