@@ -43,7 +43,7 @@ Lets the agent read pull requests, review comments and workflow results. The `gh
 
 ## Skills worth writing for this project
 
-A skill is a folder under `.claude/skills/<name>/` containing a `SKILL.md`: YAML frontmatter with `name` and `description`, then the instructions. Project skills live in the repository and travel with it; personal ones live in `~/.claude/skills/`.
+A skill is a folder under `.agents/skills/<name>/` containing a `SKILL.md`: YAML frontmatter with `name` and `description`, then the instructions. Project skills live in the repository and travel with it; personal ones live in `~/.agents/skills/`.
 
 **The description is the trigger.** It is what the agent matches against the task, so it has to say what the skill does *and when to use it*. A vague description means the skill is never loaded, which is indistinguishable from not having written it.
 
@@ -57,6 +57,6 @@ The Expo MCP server is declared in `.mcp.json` at the repository root, so Claude
 
 **An MCP answer is evidence, not authority.** It can be out of date, or right about a different version. When it matters, check it against this repository: the installed version, the actual file, the real output.
 
-**Neither replaces the conventions.** An agent with every MCP in the world will still write a cross-feature import unless [`workflow.md`](./workflow.md) and [`architecture/overview.md`](./architecture/overview.md) are in front of it. That is why `AGENTS.md` at the repository root — which `CLAUDE.md` and `GEMINI.md` import — points at those first.
+**Neither replaces the conventions.** An agent with every MCP in the world will still write a cross-feature import unless [`workflow.md`](./workflow.md) and [`architecture/overview.md`](./architecture/overview.md) are in front of it. That is why `AGENTS.md` at the repository root points at those first.
 
 **Never report a check you did not run.** An MCP saying a build succeeded is not the same as `pnpm check-all` passing, and `tsc` passing is not the same as the bundle building. Both distinctions have already bitten this repository — see the note at the end of [`workflow.md`](./workflow.md).

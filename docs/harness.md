@@ -7,9 +7,9 @@ The goal is short conversations. Anything you would otherwise re-explain in chat
 ```mermaid
 flowchart LR
     A["AGENTS.md<br/>entry point"] --> M["docs/memory/<br/>decisions · lessons · glossary · log"]
-    A --> S["skills<br/>.claude/skills/s-expo-*"]
-    A --> R["rules<br/>.claude/rules/ (path-scoped)"]
-    S --> AG["agents<br/>.claude/agents/s-expo-*"]
+    A --> S["skills<br/>.agents/skills/s-expo-*"]
+    A --> R["rules<br/>.agents/rules/ (path-scoped)"]
+    S --> AG["agents<br/>.agents/agents/s-expo-*"]
     AG --> H{{"hooks<br/>gate · lint-on-edit"}}
     AG --> G["gates<br/>check-all · CRAP · dry · mutation"]
     G --> HS["harness-score<br/>L4 in CI"]
@@ -17,48 +17,53 @@ flowchart LR
 
 ## Layers
 
-| Layer | Where | What it does | Read by |
-| --- | --- | --- | --- |
-| Entry point | `AGENTS.md` | stack, structure, rules, commands, the skill/agent tables, harness change history | every tool; `CLAUDE.md` and `GEMINI.md` import it |
-| Memory | `docs/memory/` | decisions with reasons, non-obvious failures, domain terms, a work log | any agent at session start (`s-expo-memory`) |
-| Skills | `.claude/skills/s-expo-*/SKILL.md` (also `.agents/skills/`) | procedures: how to do a kind of work | loaded on demand by Claude Code, Codex, OpenCode…; plain Markdown for the rest |
-| Agents | `.claude/agents/s-expo-*.md` | roles: who does a phase, with which tools and model | Claude Code subagents; a role prompt for any other model |
-| Rules | `.claude/rules/s-expo-*.md` | non-negotiables, loaded only for files matching `paths:` | Claude Code automatically; others via `AGENTS.md` |
-| Hooks | `.claude/hooks/`, `.claude/settings.json` | a gate that blocks irreversible or guardrail-skipping actions; `eslint --fix` after each edit | Claude Code (and tools that read the same events) |
-| Entry prompts | `.github/prompts/s-expo-*.prompt.md` | one-click entry points into the main skills | GitHub Copilot, VS Code |
-| Gates | `pnpm check-all`, `pnpm quality`, `pnpm quality:mutate` | deterministic answers to "is it right?" | agents and CI |
-| Measurement | `pnpm harness:score`, `harness.yml` | the harness's own maturity, gated at L4 | CI |
-| MCP | `.mcp.json` | the Expo MCP server, for SDK docs no model was trained on | Claude Code (asks once to approve) |
+Everything lives in tool-neutral places — `AGENTS.md`, `.agents/`, `docs/` — as plain Markdown. Tool folders are thin adapters that point into them.
+
+| Layer | Where | What it does |
+| --- | --- | --- |
+| Entry point | `AGENTS.md` | stack, structure, rules, commands, skill/agent tables, model tiers, guardrails, adapters, harness change history |
+| Memory | `docs/memory/` | decisions with reasons, non-obvious failures, domain terms, a work log (`s-expo-memory`) |
+| Skills | `.agents/skills/s-expo-*/SKILL.md` | procedures: how to do a kind of work |
+| Agents | `.agents/agents/s-expo-*.md` | roles: who does a phase, with which tools and which **tier** of model |
+| Rules | `.agents/rules/s-expo-*.md` | non-negotiables for the files matching their `paths:` |
+| Hooks | `.agents/hooks/` | a gate that blocks irreversible or guardrail-skipping actions; `eslint --fix` after each edit |
+| Gates | `pnpm check-all`, `pnpm quality`, `pnpm quality:mutate` | deterministic answers to "is it right?" |
+| Measurement | `pnpm harness:score`, `harness.yml` | the harness's own maturity, gated at L4 |
 
 ## How a change flows
 
-The `s-expo-dev` skill runs a change as a pipeline with a producer–reviewer loop, one subagent per phase:
+The `s-expo-dev` skill runs a change as a pipeline with a producer–reviewer loop, one role per phase:
 
-| Phase | Agent | Writes |
+| Phase | Agent | Tier | Writes |
+| --- | --- | --- | --- |
+| 0 context | main thread | — | reads memory, classifies the change, branches |
+| 1 plan | `s-expo-planner` (read-only) | deep | `_workspace/01_planner_plan.md` |
+| 2 build | `s-expo-builder` | deep | code + `_workspace/02_builder_log.md` |
+| 3 gates | `s-expo-quality` (read-only) | standard | `_workspace/03_quality_report.md` |
+| 4 review | `s-expo-reviewer` (read-only) | deep | `_workspace/04_reviewer_findings.md` |
+| 5 record | `s-expo-docs-keeper` | standard | `docs/memory/*` |
+| 6 commit | main thread | — | Conventional Commits, PR on request |
+
+Build ↔ review loops at most twice. `_workspace/` is git-ignored and kept after a run, so "continue" or "fix the findings" resumes instead of restarting. In a tool with subagents each phase is a separate agent; in any other tool the same model plays each role in turn, reading the agent file for that phase.
+
+## Models: tiers, not names
+
+Agents never name a vendor's model. They name a **tier** — `deep` for design, code and review; `standard` for running commands and structured writing — and each tool maps the tier to whatever it has. The table is in `AGENTS.md` under *Model tiers*.
+
+Two reasons. A different tool has different models, and the harness must not care. And models are retired and renamed: when that happens, nothing in `.agents/` changes. The only vendor names live in an adapter — for Claude Code, the `model:` field of each agent (`deep` → `inherit`, the session's own model; `standard` → `sonnet`, an alias that always points at the current model of that family). If that alias ever stops resolving, it is a one-word change to `inherit`. When in doubt, the session model is always a valid choice: the gates, not the model, decide whether the work is right.
+
+## Adapters per tool
+
+| Tool | What loads natively | What you do by hand |
 | --- | --- | --- |
-| 0 context | main thread | reads memory, classifies the change, branches |
-| 1 plan | `s-expo-planner` (opus, read-only) | `_workspace/01_planner_plan.md` |
-| 2 build | `s-expo-builder` (opus) | code + `_workspace/02_builder_log.md` |
-| 3 gates | `s-expo-quality` (sonnet, read-only) | `_workspace/03_quality_report.md` |
-| 4 review | `s-expo-reviewer` (opus, read-only) | `_workspace/04_reviewer_findings.md` |
-| 5 record | `s-expo-docs-keeper` (sonnet) | `docs/memory/*` |
-| 6 commit | main thread | Conventional Commits, PR on request |
+| Claude Code | `CLAUDE.md` → `AGENTS.md`; skills, subagents and path rules through `.claude/*` links into `.agents/`; hooks and permissions from `.claude/settings.json`; Expo MCP from `.mcp.json` | nothing |
+| Codex, OpenCode and other `AGENTS.md` readers | `AGENTS.md`; skills from `.agents/skills/` | play the agent roles yourself; follow the guardrails (hooks are not wired) |
+| GitHub Copilot | `AGENTS.md`; `.github/prompts/` gives `/s-expo-dev`, `/s-expo-review`, `/s-expo-quality`, `/s-expo-release`, `/s-expo-evolve` | follow the guardrails |
+| Cursor, Windsurf, Cline, Zed and others | `AGENTS.md` | open the skill the task needs; follow the guardrails |
 
-Build ↔ review loops at most twice. `_workspace/` is git-ignored and kept after a run, so "continue" or "fix the findings" resumes instead of restarting.
+Where hooks are not wired, the guardrails in `AGENTS.md` still apply — nothing enforces them mechanically, and the five required CI checks catch what slips through. Adding a new tool means adding an adapter row, never moving content out of `.agents/`.
 
-Models are chosen per role — opus where judgment matters, sonnet where the work is procedural — not pinned to the top tier everywhere.
-
-## Using it from different tools
-
-| Tool | What happens |
-| --- | --- |
-| Claude Code | reads `CLAUDE.md` → `AGENTS.md`; skills, subagents, path rules, hooks and `.mcp.json` all work natively |
-| Codex CLI | reads `AGENTS.md`; skills from `.agents/skills/`; run the `s-expo-dev` phases yourself |
-| Gemini CLI | reads `GEMINI.md` → `AGENTS.md`; open the skill file the table names |
-| Cursor / Windsurf / Cline | read `AGENTS.md`; point the agent at the skill file for the task |
-| GitHub Copilot | reads `AGENTS.md`; `.github/prompts/` gives `/s-expo-dev`, `/s-expo-review`, `/s-expo-quality`, `/s-expo-release`, `/s-expo-evolve` |
-
-Without hooks, the gate rules still apply — they are listed in `AGENTS.md` — but nothing enforces them mechanically. The CI gates catch what slips through.
+The Claude Code adapter links each skill, agent and rule individually rather than linking whole folders: some tools — harness-score among them — do not follow a linked directory. `s-expo-adapters.test.mjs` (run by `pnpm test:hooks` and in CI) fails when an item has no link or a link points nowhere. On Windows, clone with `git config core.symlinks true` so the links are links, not text files.
 
 A good opening message in any tool is one line: *"Follow AGENTS.md. Task: …"*.
 

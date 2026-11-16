@@ -42,7 +42,7 @@ The project structure, the CI workflows and most of the tooling choices come fro
 | Lint & format | ESLint (`@antfu/eslint-config`, formatting via ESLint Stylistic — no Prettier) |
 | Language | TypeScript 6, strict |
 | Package manager | pnpm |
-| Agent harness | `AGENTS.md`, `s-expo-*` agents, skills, rules and hooks in `.claude/`, project memory in `docs/memory/` |
+| Agent harness | tool-neutral: `AGENTS.md`, `s-expo-*` skills, agents, rules and hooks in `.agents/`, project memory in `docs/memory/` |
 | Code quality | crapper (CRAP), dryer (duplication), mutator (mutation testing) — vendored in `tools/` |
 
 ## Getting started
@@ -87,16 +87,16 @@ Every change is written test-first. **[`docs/workflow.md`](./docs/workflow.md) i
 
 ## AI agent harness
 
-The repository carries everything an AI coding agent needs to work here, so a conversation can start with one line — *"Follow AGENTS.md. Task: …"* — in any tool, on any model. Switch from Claude to Codex or Gemini when a usage limit runs out and the context comes with the code, not with the chat.
+The repository carries everything an AI coding agent needs to work here, so a conversation can start with one line — *"Follow AGENTS.md. Task: …"* — in any tool, on any model. Switch tools or models when a usage limit runs out and the context comes with the code, not with the chat.
 
 | Piece | Where | What it gives the agent |
 | --- | --- | --- |
-| Entry point | [`AGENTS.md`](./AGENTS.md) (imported by `CLAUDE.md`, `GEMINI.md`) | stack, rules, commands, which skill to use |
+| Entry point | [`AGENTS.md`](./AGENTS.md) | stack, rules, commands, which skill to use, model tiers, guardrails |
 | Memory | [`docs/memory/`](./docs/memory/README.md) | decisions and their reasons, lessons from failures, glossary, work log |
-| Skills | `.claude/skills/s-expo-*` (also `.agents/skills/`) | procedures: `s-expo-dev` orchestrates a change; `s-expo-mode` is the coding discipline; release, SDK upgrade, new feature, Maestro, memory, quality gates, harness upkeep |
-| Agents | `.claude/agents/s-expo-*` | planner, builder, quality, reviewer, docs keeper — each with its tools and model |
-| Rules | `.claude/rules/s-expo-*` | non-negotiables loaded only for the files they cover |
-| Hooks | `.claude/settings.json` | blocks force-pushing `main`, `--no-verify`, production builds, edits to generated or secret files; runs `eslint --fix` after every edit |
+| Skills | `.agents/skills/s-expo-*` | procedures: `s-expo-dev` orchestrates a change; `s-expo-mode` is the coding discipline; release, SDK upgrade, new feature, Maestro, memory, quality gates, harness upkeep |
+| Agents | `.agents/agents/s-expo-*` | planner, builder, quality, reviewer, docs keeper — each with its tools and a model tier (`deep` / `standard`), not a vendor model |
+| Rules | `.agents/rules/s-expo-*` | non-negotiables loaded only for the files they cover |
+| Hooks | `.agents/hooks/` (wired for Claude Code in `.claude/settings.json`) | blocks force-pushing `main`, `--no-verify`, production builds, edits to generated or secret files; runs `eslint --fix` after every edit |
 | Entry prompts | `.github/prompts/` | `/s-expo-dev`, `/s-expo-review`, `/s-expo-quality`, `/s-expo-release`, `/s-expo-evolve` in Copilot |
 
 A change runs **plan → test-first build → gates → review → memory → commit**, with at most two build/review loops. The full description, and how to use it from each tool: [`docs/harness.md`](./docs/harness.md).
@@ -231,7 +231,8 @@ src/
 ├─ components/ui/  # design system
 ├─ lib/            # infrastructure: api client, i18n, storage, hooks
 └─ translations/   # en-us.json, pt-br.json
-.claude/           # agent harness: agents/, skills/, rules/, hooks/, settings.json
+.agents/           # agent harness, tool-neutral: skills/, agents/, rules/, hooks/
+.claude/           # Claude Code adapter: links into .agents/ + settings.json
 docs/memory/       # project memory for every session and model
 tools/             # vendored quality tools: crapper, dryer, mutator
 ```

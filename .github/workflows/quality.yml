@@ -4,7 +4,7 @@
 #   - no structural duplication at or above 0.8 (tools/dryer).
 # Mutation testing (tools/mutator) reruns Jest once per mutant, so it stays a
 # local step on the files a change touches: pnpm quality:mutate <file>.
-# See .claude/skills/s-expo-quality-gates/SKILL.md.
+# See .agents/skills/s-expo-quality-gates/SKILL.md.
 
 # 🚨 GITHUB SECRETS REQUIRED: NONE
 

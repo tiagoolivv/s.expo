@@ -72,7 +72,6 @@ export default antfu(
             // Names agent tools look for verbatim; renaming them hides them.
             'AGENTS.md',
             'CLAUDE.md',
-            'GEMINI.md',
             'SKILL.md',
             'THIRD_PARTY_NOTICES.md',
             'ISSUE_TEMPLATE.md',

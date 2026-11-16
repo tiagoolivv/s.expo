@@ -52,5 +52,5 @@ tools/**/*.egg-info/
 target/
 
 # Intermediate artifacts the agent harness writes between phases (see
-# .claude/skills/s-expo-dev). Kept on disk for review, never committed.
+# .agents/skills/s-expo-dev). Kept on disk for review, never committed.
 _workspace/

@@ -59,9 +59,9 @@ Files in `_workspace/` named `{phase}_{agent}_{artifact}.md`. The read-only agen
 - Never fill a missing agent judgment by guessing. Only facts you verified go into an artifact on its behalf.
 - Conflicting results are kept with their source, not deleted.
 
-## Without subagents (other tools and models)
+## Without subagents
 
-The phases are plain procedure. In Codex, Gemini, Cursor or any model without a subagent tool, run them yourself in order, reading `.claude/agents/<name>.md` as the role for that phase and writing the same `_workspace/` files. The output and the gates are the same.
+The phases are plain procedure. In any tool without subagents, run them yourself in order, reading `.agents/agents/<name>.md` as the role for that phase and writing the same `_workspace/` files. The output and the gates are the same.
 
 ## Test scenarios
 

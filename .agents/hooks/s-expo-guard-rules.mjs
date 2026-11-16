@@ -1,7 +1,7 @@
 import { posix } from 'node:path';
 
 // Pure decisions behind the s-expo gate hook. Kept free of I/O so
-// `node --test .claude/hooks/` can pin every rule without spawning an agent.
+// `node --test .agents/hooks/` can pin every rule without spawning an agent.
 //
 // Each rule exists because the action is either irreversible or bypasses a
 // guardrail the project already relies on. The reason travels with the block,

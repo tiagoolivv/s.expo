@@ -18,9 +18,9 @@ Choices that someone could reasonably undo, with the reason, so they are undone 
 ## Agent harness in the repository
 *2026-11-16*
 **Context:** work happens in short conversations, often switching between AI tools and models when one hits its usage limit. Context re-explained in chat is lost each time.
-**Decision:** keep the whole harness in the repo — `AGENTS.md` as the tool-neutral entry point (`CLAUDE.md` and `GEMINI.md` import it), agents/skills/rules/hooks under `.claude/` (skills also exposed at `.agents/skills`), memory in `docs/memory/`. Built from [revfactory/harness](https://github.com/revfactory/harness), renamed `s-expo-*`.
+**Decision:** keep the whole harness in the repo, tool-neutral — `AGENTS.md` as the entry point, skills/agents/rules/hooks under `.agents/`, memory in `docs/memory/`. Tool folders (`.claude/`, `.github/prompts/`) are adapters that only link or point there. Agents name a tier (`deep`/`standard`), never a vendor model; only adapters map tiers to models. Built from [revfactory/harness](https://github.com/revfactory/harness), renamed `s-expo-*`.
 **Why:** a clone carries the context; any model can read Markdown.
-**Revisit if:** a tool-neutral standard for agents/hooks appears that all the tools read.
+**Revisit if:** a tool-neutral standard for agents/hooks appears that all the tools read. No `GEMINI.md`: Gemini is not used here (removed 2026-11-16).
 
 ## ub-mode quality gates
 *2026-11-16*
