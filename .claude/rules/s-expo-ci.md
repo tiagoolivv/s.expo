@@ -15,4 +15,4 @@ paths:
 - `EXPO_PUBLIC_*` values are inlined in the bundle: never a secret. EAS builds cannot see local `.env` files; use `eas env:set`.
 - `expo prebuild` call sites in CI retry three times (Linux race in `app-icon-badge`).
 - Production EAS builds and store submissions stay manual. See `docs/ci/workflows.md`.
-- `quality.yml` and `harness.yml` are required checks on `main`. Renaming either job changes its check name: update the ruleset in the same change, and never add a path filter to them.
+- `lint-ts.yml`, `type-check.yml`, `test.yml`, `quality.yml` and `harness.yml` are required checks on `main`. Renaming one of those jobs changes its check name: update the ruleset in the same change, and never add a path filter to them.
