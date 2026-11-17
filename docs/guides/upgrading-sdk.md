@@ -72,5 +72,10 @@ Kept as a reminder of the shape these problems take:
 - **expo-router dropped React Navigation in SDK 56.** Application code may no longer import `@react-navigation/*`; the imports move to `expo-router/react-navigation`. There is a codemod: `pnpm dlx expo-codemod sdk-56-expo-router-react-navigation-replace src`.
 - **A transitive dependency stopped being transitive.** `@react-navigation/native` was never declared here — it resolved because `.npmrc` sets `node-linker=hoisted`. Relying on a package you did not declare works until the day it does not.
 - **TypeScript 6 stopped auto-including `@types/*`.** Every test file lost `describe` and `expect`. `@types/jest` publishes a dist-tag per compiler version; the fix was the version matching `ts6.0`, plus naming `jest` in `compilerOptions.types`.
+- **SDK 58 deprecated `expo-router/react-navigation`.** `NavigationContainer` is gone (the Jest wrapper used it) and everything else moved to `expo-router`. `useIsFocused` throws outside a route tree, so `jest-setup.ts` mocks it. Read `docs.expo.dev/router/migrate/sdk-<from>-to-<to>/` before bumping.
+- **expo-router 58 added an ESM dependency** (`standard-navigation`) that Jest must transform: add it to `transformIgnorePatterns` in `jest.config.js`.
+- **Only the web bundle broke** (Uniwind redirect to a missing file). Bundle web too.
+- **Peers pinned by the lockfile** stayed on the old SDK; see `docs/memory/lessons.md`.
+- **A peer for an API you do not use** (`@testing-library/react-native` ≥ 14 for `expo-router/testing-library`) can wait for its own change rather than widening the upgrade.
 - **`newArchEnabled` was removed from `ExpoConfig`.** The new architecture is always on.
 - **Packages became config plugins.** SDK 57 asked for `expo-image` and `expo-status-bar` to be registered. Both were unused here and were removed instead — check whether you need a package before adding its plugin.

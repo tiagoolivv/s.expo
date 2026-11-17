@@ -66,6 +66,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     favicon: './assets/favicon.png',
     bundler: 'metro',
+    // SDK 58 defaults Expo Router projects to `server` output (HTML rendered
+    // per request, needs a deployed server). Keep the SPA this template had.
+    output: 'single',
   },
   plugins: [
     [

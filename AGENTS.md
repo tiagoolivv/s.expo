@@ -14,8 +14,8 @@ Instructions for any AI coding agent, in any tool, on any model. This file is th
 
 ## Stack
 
-- **Expo SDK 57** / React Native 0.86.2 / React 19.2.3 — custom dev client, Expo Go is not supported
-- **Expo Router 57** — file-based routing, typed routes. Import navigation APIs from `expo-router/react-navigation`, never from `@react-navigation/*`: since SDK 56 the bundler rejects those imports in application code
+- **Expo SDK 58** / React Native 0.88.1 / React 19.3.0 — custom dev client, Expo Go is not supported
+- **Expo Router 58** — file-based routing, typed routes. Import navigation APIs (`Stack`, `ThemeProvider`, `DarkTheme`, `DefaultTheme`, `Theme`, `useIsFocused`, …) from `expo-router`. Never from `@react-navigation/*` — since SDK 56 the bundler rejects it — and no longer from `expo-router/react-navigation`, deprecated in SDK 58.
 - **Uniwind + Tailwind CSS 4** — `className` on RN components; theme lives in `src/global.css` under `@theme`. This project does **not** use NativeWind
 - **TanStack Query 5** + axios — server state (`src/lib/api`)
 - **Zustand 5** — client state

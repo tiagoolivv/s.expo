@@ -1,6 +1,5 @@
 import type { ViewProps } from 'react-native';
-import { Stack } from 'expo-router';
-import { ThemeProvider } from 'expo-router/react-navigation';
+import { Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';

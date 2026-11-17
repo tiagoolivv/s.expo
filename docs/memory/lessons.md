@@ -20,8 +20,14 @@ Things that failed in a non-obvious way. Symptom first, because that is what you
 ## An import resolving does not mean the package is declared
 **Symptom:** a build breaks after an unrelated dependency change. **Cause:** `.npmrc` sets `node-linker=hoisted`, so transitive packages resolve from the root — `@react-navigation/native` worked for months undeclared. **Fix:** declare every package you import.
 
+## `auto-install-peers` keeps old peer versions across an SDK upgrade
+*2026-11-17* · **Symptom:** after `expo install --fix` to SDK 58, unmet peers for `@expo/dom-webview` (57 vs ^58), `@react-native/metro-config` (0.86 vs 0.88), `@react-native/jest-preset` and a `react-test-renderer` one React minor behind; `expo-doctor` also saw `metro-cache` 0.84 under `node_modules/@expo/metro/node_modules`. **Cause:** `.npmrc` has `auto-install-peers=true`; pnpm reuses whatever peer version the lockfile already has, and the hoisted linker leaves stale nested copies behind. `pnpm update --depth Infinity <pkg>` does not touch them. **Fix:** `pnpm add -D <pkg>@<wanted>` then `pnpm remove <pkg>` rewrites the resolution; for a stale nested copy that is not in the lockfile, delete that `node_modules/**/node_modules` folder and `pnpm install --frozen-lockfile`.
+
+## A redirect in a styling library can break only one platform's bundle
+*2026-11-17* · **Symptom:** SDK 58 bundled for iOS and Android but `expo export --platform web` failed: `Unable to resolve "./exports/InputAccessoryView" from react-native-web/dist/index.js`. **Cause:** expo-router 58 imports the whole `react-native-web` index; Uniwind's Metro resolver redirects each component to `uniwind/components/<name>`, and Uniwind 1.11 listed `InputAccessoryView` without shipping the file. **Fix:** Uniwind 1.12.2+ (1.13.2 here). Bundle **every** platform, web included, after an upgrade.
+
 ## A green `tsc` is not a green bundle
-**Symptom:** type-check passes; Metro rejects the import. **Cause:** since SDK 56 the bundler rejects `@react-navigation/*` in app code. **Fix:** import from `expo-router/react-navigation`; verify with a bundle, not only `tsc`.
+**Symptom:** type-check passes; Metro rejects the import. **Cause:** since SDK 56 the bundler rejects `@react-navigation/*` in app code. **Fix:** import from `expo-router` (`expo-router/react-navigation` is deprecated since SDK 58); verify with a bundle, not only `tsc`.
 
 ## Ignored generated files hide CI type errors
 **Symptom:** `pnpm type-check` green locally, five errors in CI. **Cause:** `expo-env.d.ts` and `.expo/` exist locally and are git-ignored. **Fix:** move them aside and type-check again before pushing a change to types or `tsconfig.json` (`docs/workflow.md` §5).
