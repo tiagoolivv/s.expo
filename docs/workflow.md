@@ -116,7 +116,7 @@ The hooks run automatically: branch name, `eslint --fix` on staged files, `tsc -
 git push -u origin feat/checkout-summary
 ```
 
-Three checks gate the merge: lint, type-check and the unit tests. End-to-end tests are **not** part of the gate — every Maestro path is manual today, so run one by hand when a change touches navigation or startup.
+Five checks gate the merge: lint, type-check, the unit tests, quality (CRAP and duplication) and the harness checks. End-to-end tests are **not** part of the gate — every Maestro path is manual today, so run one by hand (or dispatch `e2e-android`) when a change touches navigation or startup.
 
 The description should say **why**, and call out anything you decided not to do. See [ci/workflows.md](./ci/workflows.md) for the whole pipeline.
 

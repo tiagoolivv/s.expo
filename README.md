@@ -281,6 +281,14 @@ It was written by doing it once and hitting every wall. Follow it and the walls 
 
 `main` is the only long-lived branch. Every change starts from it on a new branch named `feat/…`, `fix/…`, `chore/…`, `docs/…`, `refactor/…`, `test/…` or `ci/…`, and lands through a pull request. Commits follow Conventional Commits, enforced by commitlint.
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md): setup, the development loop, the checks a pull request must pass, and how to work here with an AI agent.
+
+## Security
+
+Found a vulnerability? Do not open a public issue — report it privately as described in [SECURITY.md](./SECURITY.md).
+
 ## Acknowledgements
 
 This template stands on other people's work. Thank you to:

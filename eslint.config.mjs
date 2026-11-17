@@ -76,6 +76,9 @@ export default antfu(
             'THIRD_PARTY_NOTICES.md',
             'ISSUE_TEMPLATE.md',
             'PULL_REQUEST_TEMPLATE.md',
+            // Community-health files GitHub shows as repository tabs.
+            'CONTRIBUTING.md',
+            'SECURITY.md',
           ],
         },
       ],
