@@ -10,10 +10,12 @@ function customRender(ui: ReactElement, options?: RenderOptions) {
 }
 
 // use this if you want to test user events
-export function setup(ui: ReactElement, options?: RenderOptions) {
+// Since RNTL 14 render is async: await setup(...) like await render(...).
+export async function setup(ui: ReactElement, options?: RenderOptions) {
+  const user = userEvent.setup();
   return {
-    user: userEvent.setup(),
-    ...render(ui, options),
+    user,
+    ...(await render(ui, options)),
   };
 }
 

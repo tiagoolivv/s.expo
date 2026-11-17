@@ -21,8 +21,8 @@ import { render, screen } from '@/lib/test-utils';
 import { ProfileScreen } from './profile-screen';
 
 describe('profileScreen', () => {
-  it('shows the screen title', () => {
-    render(<ProfileScreen />);
+  it('shows the screen title', async () => {
+    await render(<ProfileScreen />);
     expect(screen.getByTestId('profile-title')).toBeOnTheScreen();
   });
 });

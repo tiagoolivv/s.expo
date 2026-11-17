@@ -110,7 +110,7 @@ describe('useLogin', () => {
       data: { access: 'access-token', refresh: 'refresh-token' },
     });
 
-    const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useLogin(), { wrapper: createWrapper() });
     result.current.mutate({ email: 'user@test.com', password: 'password' });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -129,7 +129,7 @@ describe('useLogin', () => {
   it('surfaces the error when the request fails', async () => {
     mockedClient.mockRejectedValue(new Error('Invalid credentials'));
 
-    const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useLogin(), { wrapper: createWrapper() });
     result.current.mutate({ email: 'user@test.com', password: 'wrong' });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
