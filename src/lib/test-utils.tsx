@@ -3,27 +3,17 @@ import type { RenderOptions } from '@testing-library/react-native';
 
 import type { ReactElement } from 'react';
 import { render, userEvent } from '@testing-library/react-native';
-import { NavigationContainer } from 'expo-router/react-navigation';
-import * as React from 'react';
 import '@shopify/flash-list/jestSetup';
 
-function createAppWrapper() {
-  return ({ children }: { children: React.ReactNode }) => (
-    <NavigationContainer>{children}</NavigationContainer>
-  );
-}
-
-function customRender(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
-  const Wrapper = createAppWrapper(); // make sure we have a new wrapper for each render
-  return render(ui, { wrapper: Wrapper, ...options });
+function customRender(ui: ReactElement, options?: RenderOptions) {
+  return render(ui, options);
 }
 
 // use this if you want to test user events
-export function setup(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
-  const Wrapper = createAppWrapper();
+export function setup(ui: ReactElement, options?: RenderOptions) {
   return {
     user: userEvent.setup(),
-    ...render(ui, { wrapper: Wrapper, ...options }),
+    ...render(ui, options),
   };
 }
 

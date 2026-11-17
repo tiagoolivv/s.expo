@@ -53,6 +53,17 @@ jest.mock('react-native-reanimated', () => {
 });
 
 // Mock expo-localization
+// Unit tests render a screen on its own, outside Expo Router's route tree.
+// Since SDK 58 `useIsFocused` throws there (no focus context), and the old
+// NavigationContainer wrapper is gone. A screen under a unit test is the
+// focused one; real focus changes are covered by the Maestro flows.
+jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'),
+  // The key must match the hook it replaces.
+  // eslint-disable-next-line react/no-unnecessary-use-prefix
+  useIsFocused: () => true,
+}));
+
 jest.mock('expo-localization', () => ({
   getLocales: jest.fn(() => [
     {
