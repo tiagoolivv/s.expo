@@ -56,7 +56,7 @@ Two reasons. A different tool has different models, and the harness must not car
 
 | Tool | What loads natively | What you do by hand |
 | --- | --- | --- |
-| Claude Code | `CLAUDE.md` → `AGENTS.md`; skills, subagents and path rules through `.claude/*` links into `.agents/`; hooks and permissions from `.claude/settings.json`; Expo MCP from `.mcp.json` | nothing |
+| Claude Code | `CLAUDE.md` → `AGENTS.md`; skills, subagents and path rules through `.claude/*` links into `.agents/`; hooks, permissions and the official Expo plugin (Expo skills + MCP) from `.claude/settings.json` | nothing |
 | Codex, OpenCode and other `AGENTS.md` readers | `AGENTS.md`; skills from `.agents/skills/` | play the agent roles yourself; follow the guardrails (hooks are not wired) |
 | GitHub Copilot | `AGENTS.md`; `.github/prompts/` gives `/s-expo-dev`, `/s-expo-review`, `/s-expo-quality`, `/s-expo-release`, `/s-expo-evolve` | follow the guardrails |
 | Cursor, Windsurf, Cline, Zed and others | `AGENTS.md` | open the skill the task needs; follow the guardrails |

@@ -7,7 +7,7 @@ description: Upgrade s-expo to the next Expo SDK in the strict order that worked
 
 The procedure is [`docs/guides/upgrading-sdk.md`](../../../docs/guides/upgrading-sdk.md). Each step's output is the next step's input, so do not reorder.
 
-1. **Changelogs** for every SDK skipped, not only the target. Use the Expo MCP server (`docs/ai-tooling.md`) — SDK breaking changes post-date any model's training data. Do not guess an API.
+1. **Changelogs** for every SDK skipped, not only the target (`expo.dev/changelog/sdk-<N>`), plus the router migration guide (`docs.expo.dev/router/migrate/sdk-<from>-to-<to>/`). Use the Expo MCP server or `docs.expo.dev/llms.txt` (`docs/ai-tooling.md`) — SDK breaking changes post-date any model's training data. Do not guess an API. Expo's own `expo-upgrade` skill (official plugin) is a useful second checklist; where it differs from this one, this one wins.
 2. **Clean start**: `git checkout -b chore/upgrade-sdk-<N>` from `main`, then `pnpm check-all` green before touching anything.
 3. **Bump**: `pnpm expo install expo@^<N>.0.0` then `pnpm expo install --fix`.
 4. **Doctor**: `pnpm dlx expo-doctor@latest` until every check passes. Exclusions go to `expo.install.exclude` in `package.json`, with a reason in the PR.
