@@ -21,6 +21,9 @@ on:
         required: true
         default: ''
 
+permissions:
+  contents: read
+
 jobs:
   download-eas-apk:
     if: github.event_name != 'pull_request'  && github.event.inputs.apk-url != ''
@@ -29,7 +32,11 @@ jobs:
 
     steps:
       - name: 📦 Download EAS APK
-        run: wget ${{ github.event.inputs.apk-url }} -O ./app-release.apk
+        # The URL is free text from the dispatch form: pass it through env so
+        # it is never expanded into the script itself.
+        env:
+          APK_URL: ${{ github.event.inputs.apk-url }}
+        run: wget "$APK_URL" -O ./app-release.apk
 
       - name: Upload Test APK
         uses: actions/upload-artifact@v7

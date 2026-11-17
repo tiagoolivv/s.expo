@@ -16,6 +16,9 @@ name: EAS Production Build (Android)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   Build:
     name: EAS Production Build (Android)

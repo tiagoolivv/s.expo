@@ -20,6 +20,9 @@ name: E2E Tests Android (Maestro + Github Action)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   generate-test-apk:
     name: Generate Test APK (Gradle)
