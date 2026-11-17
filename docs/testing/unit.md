@@ -59,7 +59,7 @@ These run in milliseconds and fail with an unambiguous message. When a component
 
 ## Native mocks
 
-`jest-setup.ts` mocks the native modules — MMKV, reanimated, and others — that have no JS implementation under Jest. `__mocks__/moti.ts` replaces Moti's animated views with plain ones. Add a mock there when a new native dependency breaks the suite, rather than mocking it in individual tests.
+`jest-setup.ts` mocks the native modules — MMKV, reanimated, and others — that have no JS implementation under Jest. Add a mock there when a new native dependency breaks the suite, rather than mocking it in individual tests.
 
 ## The single-file hang
 
