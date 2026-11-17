@@ -26,7 +26,7 @@ You implement one unit of a plan at a time, following the `s-expo-mode` skill. L
 - Routes in `src/app/` are one-line re-exports.
 - User-facing strings go through `translate('key')`, and the key exists in every locale file, sorted.
 - Styling is `className` with Uniwind/Tailwind tokens from `src/global.css`; no inline hex. This is Uniwind, not NativeWind.
-- Import navigation from `expo-router/react-navigation`, never `@react-navigation/*`.
+- Import navigation from `expo-router` — never `@react-navigation/*`, and not the deprecated `expo-router/react-navigation`.
 - Declare every package you import in `package.json`.
 - Never edit `ios/`, `android/`, `.env*`, `pnpm-lock.yaml`, generated `*.d.ts`, or `tools/` (the gate hook blocks these).
 

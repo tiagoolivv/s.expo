@@ -25,6 +25,6 @@ Two declarations of the same shape drift apart. One does not.
 
 `compilerOptions.types` names `jest` explicitly. TypeScript 6 no longer picks up every `@types/*` package automatically, and without this line every `describe` and `expect` in the repository is an error. If you add another package whose types are global rather than imported, add it to that array.
 
-`@types/jest` is pinned to 30 and listed in `expo.install.exclude`. The package publishes one dist-tag per compiler version and `ts6.0` points at 30, while `expo-doctor` expects the version matching Jest 29. The compiler wins; the exclusion silences the false positive.
+`@types/jest` is on 30, matching both Jest 30 and the `ts6.0` dist-tag of `@types/jest`. Until SDK 57 it sat in `expo.install.exclude`, because `expo-doctor` expected the Jest 29 types; SDK 58 moved to Jest 30 and no longer pins it, so the exclusion is gone.
 
 `baseUrl` is deliberately absent. It is deprecated and stops working in TypeScript 7, and a `tsconfig` error takes the path mappings down with it — which shows up as every `@/…` import going red in the editor while `pnpm type-check` still passes.

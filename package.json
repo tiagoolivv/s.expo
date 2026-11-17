@@ -149,11 +149,6 @@
           "react-native-restart"
         ]
       }
-    },
-    "install": {
-      "exclude": [
-        "@types/jest"
-      ]
     }
   },
   "osMetadata": {

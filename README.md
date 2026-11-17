@@ -22,7 +22,7 @@
 
 ---
 
-Built on the **[Obytes React Native / Expo starter](https://github.com/obytes/react-native-template-obytes)** (v9.0.0), then trimmed to a single start screen with no authentication, upgraded to Expo SDK 57, and documented in [`docs/`](./docs/README.md).
+Built on the **[Obytes React Native / Expo starter](https://github.com/obytes/react-native-template-obytes)** (v9.0.0), then trimmed to a single start screen with no authentication, upgraded to Expo SDK 58, and documented in [`docs/`](./docs/README.md).
 
 The project structure, the CI workflows and most of the tooling choices come from Obytes — credit where it is due. What changed here is scope: everything that was an example was removed, so the first feature you write is the first feature in the app.
 
@@ -30,8 +30,8 @@ The project structure, the CI workflows and most of the tooling choices come fro
 
 | Concern | Choice |
 | --- | --- |
-| Runtime | Expo SDK 57, React Native 0.86, React 19.2 |
-| Routing | Expo Router 57 (file-based, typed routes) |
+| Runtime | Expo SDK 58, React Native 0.88, React 19.3 |
+| Routing | Expo Router 58 (file-based, typed routes) |
 | Styling | Uniwind + Tailwind CSS 4 (`className`, theme via CSS `@theme`) |
 | Server state | TanStack Query 5 + axios |
 | Client state | Zustand 5 |
