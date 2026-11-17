@@ -2,6 +2,7 @@
 
 One entry per change that went through the harness, newest first: date · type · what · why. Detail lives in the commits and the pull request; this is the index a new session skims.
 
+- **2026-11-17** · release · **v0.3.0** (minor) · Expo SDK 58, React Native Testing Library 14, unused bottom-sheet/moti removed, Expo AI tooling, workflow permissions, `SECURITY.md` + `CONTRIBUTING.md`; tag, GitHub release and the EAS preview build (Android) fired from the PR merge.
 - **2026-11-17** · docs · `SECURITY.md` (private reporting through GitHub, supported versions, scope) and `CONTRIBUTING.md` at the root, linked from the README; `docs/workflow.md` said three checks gate the merge, now five.
 - **2026-11-17** · docs(harness) · Expo AI tooling: official Expo plugin enabled for Claude Code (replaces `.mcp.json`), project-over-Expo-skill precedence, "do not trust training data" + `pnpm expo install` rules in `AGENTS.md`, agent-device documented as optional, Argent and agentic workflows declined with reasons; `expo-doctor.yml` prebuild retried like the other two call sites.
 - **2026-11-17** · test · React Native Testing Library 14 with `test-renderer` 1.3 (React 19.3 line); `render`/`setup`/`renderHook` awaited, `react-test-renderer` gone.
