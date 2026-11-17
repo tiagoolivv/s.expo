@@ -61,9 +61,16 @@ A feature folder contains: `<name>-screen.tsx`, optional `components/`, optional
 - **Never report a check as passing unless you ran it** — a green `tsc` on code the bundler rejects proves nothing.
 - **Git**: branch from `main` (`feat/…`, `fix/…`, `chore/…`, `docs/…`, `refactor/…`, `test/…`, `ci/…`). Conventional Commits, enforced by commitlint. Changes reach `main` only through a pull request. Never `--no-verify`.
 
+## Expo changes every SDK — do not trust training data
+
+Expo ships breaking changes in every SDK release; APIs you remember may be renamed, moved or removed. Before writing code that touches an Expo, EAS or React Native API, read the docs for the installed SDK — the major of `expo` in `package.json` — at `https://docs.expo.dev/versions/v<major>.0.0/`, or start from [`docs.expo.dev/llms.txt`](https://docs.expo.dev/llms.txt) (every page also exists as `.md`). Never answer from memory.
+
+Add or change an Expo-managed package with `pnpm expo install <package>`, never `pnpm add`: it picks the version that matches the SDK. `pnpm expo install --fix` realigns them; `pnpm dlx expo-doctor@latest` checks the result.
+
 ## Commands
 
 ```bash
+pnpm expo install <package>   # add an Expo-managed package at the SDK's version
 pnpm start / ios / android    # run
 pnpm lint / type-check / test # individual gates
 pnpm test:hooks               # harness hook rules (node --test)
@@ -104,6 +111,8 @@ Built with [revfactory/harness](https://github.com/revfactory/harness) and [uncl
 
 An agent file is a role. A tool with subagents runs it as one; in any other tool, play the role yourself for that phase (the `s-expo-dev` skill says how).
 
+**Expo's own skills** (`expo-*`, `eas-*`, from the official Expo plugin — see [Tool adapters](#tool-adapters)) are welcome for Expo APIs this project does not cover. Where one overlaps an `s-expo-*` skill, a rule or a doc here, **the project wins**: this is Uniwind, not NativeWind (ignore Tailwind-setup advice), pnpm, the upgrade order in `s-expo-upgrade-sdk`, Maestro on GitHub Actions rather than EAS Workflows.
+
 ### Model tiers
 
 Agents name a **tier**, never a vendor's model, so they survive model changes and work in every tool.
@@ -125,10 +134,10 @@ Optional wiring that makes a tool load the harness natively. Nothing in `.agents
 
 | Tool | Adapter |
 | --- | --- |
-| Claude Code | `CLAUDE.md` imports this file; `.claude/skills`, `.claude/agents`, `.claude/rules` hold one link per item into `.agents/` (`pnpm test:hooks` fails if one is missing); `.claude/settings.json` wires `.agents/hooks/` and permissions; `.mcp.json` adds the Expo MCP server |
-| Codex, OpenCode and other `AGENTS.md` / `.agents/skills` readers | nothing to wire: they read this file and `.agents/skills/` directly; hooks are not wired, the guardrails above apply |
+| Claude Code | `CLAUDE.md` imports this file; `.claude/skills`, `.claude/agents`, `.claude/rules` hold one link per item into `.agents/` (`pnpm test:hooks` fails if one is missing); `.claude/settings.json` wires `.agents/hooks/`, permissions, and enables the official Expo plugin (Expo skills + the Expo MCP server) — install it once per machine with `claude plugin install expo@claude-plugins-official`, then `/mcp` to sign in |
+| Codex, OpenCode and other `AGENTS.md` / `.agents/skills` readers | nothing to wire: they read this file and `.agents/skills/` directly; hooks are not wired, the guardrails above apply. Codex: `codex plugin add expo@openai-curated` adds Expo's skills and MCP |
 | GitHub Copilot | reads this file; `.github/prompts/s-expo-*.prompt.md` are entry points into the main skills |
-| Cursor, Windsurf, Cline, Zed and others | read this file; point the agent at the skill named in the table above |
+| Cursor, Windsurf, Cline, Zed and others | read this file; point the agent at the skill named in the table above. Expo's skills install per user with `pnpm dlx skills add expo/skills`; the Expo MCP server is `https://mcp.expo.dev/mcp` |
 
 **Harness change history:**
 
@@ -136,6 +145,7 @@ Optional wiring that makes a tool load the harness natively. Nothing in `.agents
 | --- | --- | --- | --- |
 | 2026-11-16 | Harness built: 5 agents, 10 skills, 7 scoped rules, gate + lint hooks, `docs/memory/`, quality tools, harness-score in CI | all | keep full project context in the repo for short, multi-model sessions |
 | 2026-11-16 | Made tool-neutral: harness moved to `.agents/` (`.claude/` is an adapter), agents name a tier instead of a model, `GEMINI.md` removed | all | work the same in any tool and survive model changes |
+| 2026-11-17 | Official Expo plugin enabled for Claude Code (replaces `.mcp.json`); Expo-skill precedence rule; "do not trust training data" and `pnpm expo install` rules; agent-device documented as optional | adapters, `AGENTS.md`, `s-expo-upgrade-sdk` | adopt Expo's AI tooling without letting it override project conventions |
 
 ## Known rough edges
 

@@ -4,7 +4,7 @@ Written from the SDK 54 to 57 upgrade this repository went through. The order ma
 
 ## 1. Read the changelog first
 
-[expo.dev/changelog](https://expo.dev/changelog) for every SDK you are skipping, not just the target. Breaking changes accumulate — the one that cost the most here landed in 56 and would have been invisible reading only the 57 notes.
+[expo.dev/changelog](https://expo.dev/changelog) for every SDK you are skipping, not just the target, and the Expo Router migration guide for each step (`docs.expo.dev/router/migrate/sdk-<from>-to-<to>/`). Expo's `expo-upgrade` skill, from the official plugin, is a second checklist; where it differs from this guide, this guide reflects what broke here. Breaking changes accumulate — the one that cost the most here landed in 56 and would have been invisible reading only the 57 notes.
 
 ## 2. Start clean
 

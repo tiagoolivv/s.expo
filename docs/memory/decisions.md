@@ -2,6 +2,13 @@
 
 Choices that someone could reasonably undo, with the reason, so they are undone on purpose or not at all. Newest first. Format: context · decision · why · revisit if.
 
+## Expo's AI tooling: plugin yes, agentic workflows not yet
+*2026-11-17*
+**Context:** Expo ships an official agent plugin (skills + MCP), toolkits for driving a running app (agent-device, Argent) and cloud agentic workflows (Agentic CI, Issue to PR, Bug triage, QA Swarm).
+**Decision:** enable the Expo plugin in the Claude adapter (it replaces `.mcp.json`) and document it for Codex and others; the project's `s-expo-*` skills and `AGENTS.md` win over Expo's generic skills. Document agent-device as an optional, uncommitted CLI. Decline Argent (MCP-only, copies its own skills into the repo) and the agentic workflows (paid Expo plan, EAS Workflows, agent key readable in an EAS environment, per-run cost).
+**Why:** take current Expo knowledge without a second harness or a bill for a one-screen template.
+**Revisit if:** an app built from this template has real user flows, or Expo Simulators reach the free plan — start with Agentic CI.
+
 ## Security fixes for transitive packages go through pnpm.overrides
 *2026-11-16*
 **Context:** 140 open Dependabot alerts, almost all in dev/build tooling (Expo CLI, Metro, ESLint, Jest) that pins its own dependencies, so Dependabot reports `security_update_not_possible` and opens no PR. Only `axios` and `zod` ship in the app.

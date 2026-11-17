@@ -2,6 +2,7 @@
 
 One entry per change that went through the harness, newest first: date · type · what · why. Detail lives in the commits and the pull request; this is the index a new session skims.
 
+- **2026-11-17** · docs(harness) · Expo AI tooling: official Expo plugin enabled for Claude Code (replaces `.mcp.json`), project-over-Expo-skill precedence, "do not trust training data" + `pnpm expo install` rules in `AGENTS.md`, agent-device documented as optional, Argent and agentic workflows declined with reasons; `expo-doctor.yml` prebuild retried like the other two call sites.
 - **2026-11-17** · test · React Native Testing Library 14 with `test-renderer` 1.3 (React 19.3 line); `render`/`setup`/`renderHook` awaited, `react-test-renderer` gone.
 - **2026-11-17** · chore(deps) · removed `@gorhom/bottom-sheet` and `moti`: installed but imported nowhere in `src/`; their Jest mocks and transform entries went with them.
 - **2026-11-17** · chore(deps) · Expo SDK 58 (RN 0.88.1, React 19.3.0, Jest 30): navigation imports moved to `expo-router`, test wrapper removed, `web.output: 'single'`, Uniwind 1.13.2, MMKV 4.3.2 + Nitro 0.35, `@types/jest` exclusion dropped; RNTL 14 left for its own change.
