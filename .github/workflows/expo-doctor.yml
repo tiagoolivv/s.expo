@@ -45,7 +45,20 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm-install
 
       - name: Run prebuild
-        run: pnpm run prebuild
+        # Retried like the other two prebuild call sites (.github/actions/eas-build,
+        # setup-jdk-generate-apk): app-icon-badge reads back an icon it is still
+        # writing, and about one Linux run in four fails with
+        # "Could not find MIME for Buffer <null>".
+        run: |
+          for attempt in 1 2 3; do
+            echo "prebuild attempt $attempt"
+            pnpm run prebuild && break
+            if [ "$attempt" = "3" ]; then
+              echo "prebuild failed three times - this is not the known flake"
+              exit 1
+            fi
+            rm -rf ios android
+          done
 
       - name: 🚑 Run Doctor Checks
         run: |
