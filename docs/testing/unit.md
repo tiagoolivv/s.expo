@@ -33,13 +33,15 @@ Use the wrapper from `@/lib/test-utils`, never RNTL's `render` directly — the 
 ```tsx
 import { render, screen } from '@/lib/test-utils';
 
-it('shows the description', () => {
-  render(<HomeScreen />);
+it('shows the description', async () => {
+  await render(<HomeScreen />);
   expect(screen.getByTestId('home-description')).toBeOnTheScreen();
 });
 ```
 
 `setup()` from the same module adds a configured `userEvent` when a test needs interaction.
+
+Since React Native Testing Library 14, `render`, `setup`, `renderHook`, `fireEvent` and `act` return promises: always `await` them, and make the test `async`. A forgotten `await` shows up as `result` being `undefined` or a query finding nothing. Queries only see host elements (`View`, `Text`, `Image`), never your composite components.
 
 ## What to assert
 

@@ -13,36 +13,36 @@ describe('homeScreen', () => {
     await i18n.changeLanguage('en-US');
   });
 
-  it('shows the app name followed by Starter as the title', () => {
-    setup(<HomeScreen />);
+  it('shows the app name followed by Starter as the title', async () => {
+    await setup(<HomeScreen />);
 
     expect(screen.getByTestId('home-title')).toHaveTextContent(
       'SExpo Starter',
     );
   });
 
-  it('shows the description below the title', () => {
-    setup(<HomeScreen />);
+  it('shows the description below the title', async () => {
+    await setup(<HomeScreen />);
 
     expect(screen.getByTestId('home-description')).toBeOnTheScreen();
   });
 
-  it('shows the theme and language controls', () => {
-    setup(<HomeScreen />);
+  it('shows the theme and language controls', async () => {
+    await setup(<HomeScreen />);
 
     expect(screen.getByTestId('theme-button')).toBeOnTheScreen();
     expect(screen.getByTestId('language-button')).toBeOnTheScreen();
   });
 
-  it('introduces the GitHub profile above the title', () => {
-    setup(<HomeScreen />);
+  it('introduces the GitHub profile above the title', async () => {
+    await setup(<HomeScreen />);
 
     expect(screen.getByTestId('home-avatar')).toBeOnTheScreen();
     expect(screen.getByTestId('home-handle')).toBeOnTheScreen();
   });
 
   it('re-renders the description when the language is toggled', async () => {
-    const { user } = setup(<HomeScreen />);
+    const { user } = await setup(<HomeScreen />);
 
     expect(screen.getByTestId('home-description')).toHaveTextContent(
       'Delete this screen, add your first feature, and ship.',
